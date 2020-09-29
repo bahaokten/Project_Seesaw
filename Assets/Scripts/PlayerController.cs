@@ -34,6 +34,21 @@ public class PlayerController : MonoBehaviour
         weapons.Add(WeaponType.Rock, rockController);
     }
 
+    public WeaponController GetWeapon(WeaponType type)
+    {
+        if (type == WeaponType.Scissor)
+        {
+            return scissorController;
+        } else if (type == WeaponType.Paper)
+        {
+            return paperController;
+        } else if (type == WeaponType.Rock)
+        {
+            return rockController;
+        }
+        return null;
+    }
+
     public WeaponController GetCurrentWeaponController()
     {
         return weapons[currentWeapon];

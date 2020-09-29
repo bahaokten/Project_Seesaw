@@ -21,6 +21,12 @@ public enum PlayerMode
     API
 }
 
+public enum WeaponAttribute
+{
+    Attack,
+    Defense
+}
+
 public enum MenuState
 {
     NaN,
@@ -44,8 +50,15 @@ public class GlobalVars : MonoBehaviour
 {
     public static GlobalVars instance;
 
-    public static float initAttack = 1.0f;
-    public static float initDefense = 1.0f;
+    //CONSTANTS
+    public static readonly float INIT_ATTACK = 1.0f;
+    public static readonly float INIT_DEFENSE = 1.0f;
+
+    public static readonly List<int> WEAPON_LEVEL_UPGRADE_PRICES = new List<int> { 5, 10, 20, 40 };
+    public static readonly List<float> WEAPON_LEVEL_UPGRADE_AMOUNT = new List<float> { 0.5f, 0.5f, 0.5f, 0.5f };
+
+    //RUNTIME
+    public int maxWeaponLevel;
 
     void Awake()
     {
@@ -57,6 +70,7 @@ public class GlobalVars : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        maxWeaponLevel = WEAPON_LEVEL_UPGRADE_PRICES.Count;
     }
     void Start()
     {
