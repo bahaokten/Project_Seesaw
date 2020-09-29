@@ -56,6 +56,9 @@ public class GlobalVars : MonoBehaviour
 {
     public static GlobalVars instance;
 
+    //CONFIG
+    public static readonly bool ANIMATE_ATTACK = true;
+
     //CONSTANTS
     public static readonly int SCORE_TO_WIN = 15;
 

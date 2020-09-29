@@ -71,11 +71,18 @@ public class GameController : MonoBehaviour
 
     public void PlayerTurnOver(WeaponType weapon_t)
     {
+        GetPlayer(currPlayer).currentWeapon = weapon_t;
 
         currState = GetNextState();
         if (currState == GameState.IssuingAttack)
         {
-            //Do attack logic
+            if (GlobalVars.ANIMATE_ATTACK)
+            {
+                StartCoroutine(MenuController.instance.AnimateAttack(Attack));
+            } else
+            {
+                Attack();
+            }
         } else
         {
             currPlayer = GetOpponentPlayerType();
@@ -84,12 +91,18 @@ public class GameController : MonoBehaviour
             if (currPlayerMode == PlayerMode.UI)
             {
                 MenuController.instance.DoMenuStateChange("buyPhaseMenu");
-            } else //API player
+            } else //API player, does nothing if both players are API players
             {
                 MenuController.instance.DoMenuStateChange("nonUIPlayerPlaying");
             }
         }
     }
+
+    public void Attack()
+    {
+
+    }
+
 
     public GameState GetNextState()
     {

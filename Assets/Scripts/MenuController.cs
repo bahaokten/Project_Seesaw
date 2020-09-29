@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -88,6 +89,28 @@ public class MenuController : MonoBehaviour
         }
     }
 
+    public void DoAttackChoice(string action)
+    {
+        if (GameController.instance.currTurnPhase != TurnPhase.AttackPhase)
+        {
+            return;
+        }
+
+        switch (action)
+        {
+            case "scissor":
+                GameController.instance.PlayerTurnOver(WeaponType.Scissor);
+                break;
+            case "paper":
+                GameController.instance.PlayerTurnOver(WeaponType.Paper);
+                break;
+            case "rock":
+                GameController.instance.PlayerTurnOver(WeaponType.Rock);
+                break;
+        }
+
+    }
+
     void AnimateExit(GameObject obj, float time = 2f)
     {
         LeanTween.move(obj, new Vector3(-1300, obj.transform.position.y, 0), time).setEase(LeanTweenType.clamp);
@@ -113,11 +136,21 @@ public class MenuController : MonoBehaviour
 
     IEnumerator DoSwapAnimation(GameObject exitingObj, GameObject enteringObj, MenuState newState = MenuState.NaN)
     {
+        if (exitingObj == enteringObj)
+        {
+            yield break;
+        }
         AnimateExit(exitingObj, swapDuration / 2);
         yield return new WaitForSeconds(swapDuration / 2);
 
         DoSwap(exitingObj, enteringObj, newState);
 
         AnimateEntry(enteringObj, swapDuration / 2);
+    }
+
+    public IEnumerator AnimateAttack(Action callback)
+    {
+        MenuController.instance.DoMenuStateChange("animateAttack");
+        yield return new WaitForSeconds(swapDuration + 0.5f);
     }
 }
