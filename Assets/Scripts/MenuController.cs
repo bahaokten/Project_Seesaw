@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class MenuController : MonoBehaviour
 {
-    Subscription<MenuStateChangedEvent> MenuStateChangedEventSubscription;
+    public static MenuController instance;
 
     public GameObject buyPhaseMenu;
     public GameObject buyMenu;
@@ -26,20 +24,29 @@ public class MenuController : MonoBehaviour
 
     void Awake()
     {
-        MenuStateChangedEventSubscription = _EventBus.Subscribe<MenuStateChangedEvent>(_OnMenuStateChangedEvent);
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
     {
         currMenu = MenuState.BuyPhaseMenu;
         currMenuObj = buyPhaseMenu;
-        menuLocTable = new Dictionary<string, Vector3>();
-        menuLocTable.Add(buyPhaseMenu.name, buyPhaseMenu.transform.position);
-        menuLocTable.Add(buyMenu.name, buyMenu.transform.position);
-        menuLocTable.Add(actionPhaseMenu.name, actionPhaseMenu.transform.position);
-        menuLocTable.Add(useMenu.name, useMenu.transform.position);
-        menuLocTable.Add(upgradeMenu.name, upgradeMenu.transform.position);
-        menuLocTable.Add(attackPhaseMenu.name, attackPhaseMenu.transform.position);
+        menuLocTable = new Dictionary<string, Vector3>
+        {
+            { buyPhaseMenu.name, buyPhaseMenu.transform.position },
+            { buyMenu.name, buyMenu.transform.position },
+            { actionPhaseMenu.name, actionPhaseMenu.transform.position },
+            { useMenu.name, useMenu.transform.position },
+            { upgradeMenu.name, upgradeMenu.transform.position },
+            { attackPhaseMenu.name, attackPhaseMenu.transform.position }
+        };
     }
 
     void Update()
@@ -49,7 +56,6 @@ public class MenuController : MonoBehaviour
 
     void OnDestroy()
     {
-        _EventBus.Unsubscribe<MenuStateChangedEvent>(MenuStateChangedEventSubscription);
     }
 
     public void DoMenuStateChange(string action)
@@ -57,14 +63,14 @@ public class MenuController : MonoBehaviour
         switch (action)
         {
             case "buyPhaseMenu":
-                GameController.currPhase = GamePhase.BuyPhase;
+                GameController.instance.currTurnPhase = TurnPhase.BuyPhase;
                 StartCoroutine(DoSwapAnimation(currMenuObj, buyPhaseMenu, MenuState.BuyPhaseMenu));
                 break;
             case "buyMenu":
                 StartCoroutine(DoSwapAnimation(currMenuObj, buyMenu, MenuState.BuyMenu));
                 break;
             case "actionPhaseMenu":
-                GameController.currPhase = GamePhase.ActionPhase;
+                GameController.instance.currTurnPhase = TurnPhase.ActionPhase;
                 StartCoroutine(DoSwapAnimation(currMenuObj, actionPhaseMenu, MenuState.ActionPhaseMenu));
                 break;
             case "useMenu":
@@ -74,15 +80,12 @@ public class MenuController : MonoBehaviour
                 StartCoroutine(DoSwapAnimation(currMenuObj, upgradeMenu, MenuState.UpgradeMenu));
                 break;
             case "attackPhaseMenu":
-                GameController.currPhase = GamePhase.AttackPhase;
+                GameController.instance.currTurnPhase = TurnPhase.AttackPhase;
                 StartCoroutine(DoSwapAnimation(currMenuObj, attackPhaseMenu, MenuState.AttackPhaseMenu));
                 break;
+            case "nonUIPlayerPlaying":
+                break;
         }
-    }
-
-    void _OnMenuStateChangedEvent(MenuStateChangedEvent e)
-    {
-
     }
 
     void AnimateExit(GameObject obj, float time = 2f)

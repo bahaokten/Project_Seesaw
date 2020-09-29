@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum WeaponType
@@ -35,15 +34,22 @@ public enum MenuState
     ActionPhaseMenu,
     UseMenu,
     UpgradeMenu,
-    AttackPhaseMenu
+    AttackPhaseMenu,
+    NonUIPlayerPlaying
 }
 
-public enum GamePhase
+public enum GameState
+{
+    LeftActive,
+    RightActive,
+    IssuingAttack
+}
+
+public enum TurnPhase
 {
     BuyPhase,
     ActionPhase,
-    AttackPhase,
-    IdlePhase
+    AttackPhase
 }
 
 public class GlobalVars : MonoBehaviour
@@ -51,6 +57,8 @@ public class GlobalVars : MonoBehaviour
     public static GlobalVars instance;
 
     //CONSTANTS
+    public static readonly int SCORE_TO_WIN = 15;
+
     public static readonly float INIT_ATTACK = 1.0f;
     public static readonly float INIT_DEFENSE = 1.0f;
 

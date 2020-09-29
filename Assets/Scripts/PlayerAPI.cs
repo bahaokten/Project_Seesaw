@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
-public class PlayerAPI : MonoBehaviour
+public static class PlayerAPI
 {
     //=========== BUY PHASE ===========
     public static bool BuyCard(PlayerController player, Type card_t)
     {
         Cards.BaseCard card = (Cards.BaseCard)Activator.CreateInstance(card_t);
 
-        if (GameController.currPhase != GamePhase.BuyPhase || card.price > player.coins)
+        if (GameController.instance.currTurnPhase != TurnPhase.BuyPhase || card.price > player.coins)
         {
             return false;
         }
@@ -23,9 +19,9 @@ public class PlayerAPI : MonoBehaviour
 
     public static bool EndBuyPhase()
     {
-        if (GameController.currPhase == GamePhase.BuyPhase)
+        if (GameController.instance.currTurnPhase == TurnPhase.BuyPhase)
         {
-            GameController.currPhase = GamePhase.ActionPhase;
+            GameController.instance.currTurnPhase = TurnPhase.ActionPhase;
             return true;
         }
 
@@ -35,7 +31,7 @@ public class PlayerAPI : MonoBehaviour
     //=========== ACTION PHASE ===========
     public static bool UseCard(PlayerController player, Type card_t)
     {
-        if (GameController.currPhase != GamePhase.ActionPhase)
+        if (GameController.instance.currTurnPhase != TurnPhase.ActionPhase)
         {
             return false;
         }
@@ -64,7 +60,7 @@ public class PlayerAPI : MonoBehaviour
 
     public static bool UpgradeWeapon(PlayerController player, WeaponType weapon_t, WeaponAttribute attr)
     {
-        if (GameController.currPhase != GamePhase.ActionPhase)
+        if (GameController.instance.currTurnPhase != TurnPhase.ActionPhase)
         {
             return false;
         }
@@ -90,9 +86,9 @@ public class PlayerAPI : MonoBehaviour
 
     public static bool EndActionPhase()
     {
-        if (GameController.currPhase == GamePhase.ActionPhase)
+        if (GameController.instance.currTurnPhase == TurnPhase.ActionPhase)
         {
-            GameController.currPhase = GamePhase.AttackPhase;
+            GameController.instance.currTurnPhase = TurnPhase.AttackPhase;
             return true;
         }
 
@@ -103,11 +99,12 @@ public class PlayerAPI : MonoBehaviour
 
     public static bool PickAttack(WeaponType weapon_t)
     {
-        if (GameController.currPhase != GamePhase.AttackPhase)
+        if (GameController.instance.currTurnPhase != TurnPhase.AttackPhase)
         {
             return false;
         }
 
+        GameController.instance.PlayerTurnOver(weapon_t);
 
         return false;
     }

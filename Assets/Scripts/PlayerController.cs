@@ -1,11 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.WSA.Input;
 
 public class PlayerController : MonoBehaviour
 {
     public Player playerType;
+    public PlayerMode playerMode;
+
     //Weapon related
     public WeaponController scissorController;
     public WeaponController paperController;

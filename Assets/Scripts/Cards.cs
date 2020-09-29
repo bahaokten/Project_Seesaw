@@ -22,7 +22,7 @@ public class Cards
     {
         public int cardId;
 
-        public int priority = 5; //Lower priority card is issues first
+        public int priority = 5; //Lower priority card is issued first
 
         public int price;
 
@@ -91,7 +91,7 @@ public class Cards
 
         public override void DoPreAttackAction()
         {
-            GameController.instance.GetPlayer(GameController.currPlayer).GetCurrentWeaponController().currentAttack += 0.5f;
+            GameController.instance.GetPlayer(GameController.instance.currPlayer).GetCurrentWeaponController().currentAttack += 0.5f;
             base.DoPreAttackAction();
         }
 
@@ -110,7 +110,7 @@ public class Cards
 
         public override void DoPreAttackAction()
         {
-            GameController.instance.GetPlayer(GameController.currPlayer).scissorController.currentDefense += 0.5f;
+            GameController.instance.GetPlayer(GameController.instance.currPlayer).scissorController.currentDefense += 0.5f;
             base.DoPreAttackAction();
         }
 
