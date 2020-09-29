@@ -116,6 +116,38 @@ public class MenuController : MonoBehaviour
 
     }
 
+    public void DoWeaponUpgrade(string action)
+    {
+        if (GameController.instance.currTurnPhase != TurnPhase.ActionPhase)
+        {
+            return;
+        }
+
+        switch (action)
+        {
+            case "scissor_attack":
+                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Attack);
+                break;
+            case "scissor_defense":
+                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Defense);
+                break;
+            case "paper_attack":
+                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Paper, WeaponAttribute.Attack);
+                break;
+            case "paper_defense":
+                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Paper, WeaponAttribute.Defense);
+                break;
+            case "rock_attack":
+                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Rock, WeaponAttribute.Attack);
+                break;
+            case "rock_defense":
+                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Rock, WeaponAttribute.Defense);
+                break;
+        }
+
+        DoMenuStateChange("attackPhaseMenu");
+    }
+
     void AnimateExit(GameObject obj, float time = 2f)
     {
         LeanTween.move(obj, new Vector3(-1300, obj.transform.position.y, 0), time).setEase(LeanTweenType.clamp);
@@ -165,10 +197,20 @@ public class MenuController : MonoBehaviour
         AnimateEntry(enteringObj, swapDuration / 2);
     }
 
+    static float weaponFlyTime = 1f;
+    static float weaponPreAttack = 0.5f;
     public IEnumerator AnimateAttack(Action callback)
     {
         MenuController.instance.DoMenuStateChange("animateAttack");
-        yield return new WaitForSeconds(swapDuration + 0.5f);
-        Transform t = GameController.instance.playerControllerL.GetCurrentWeaponController().weaponVisualObj.transform;
+        yield return new WaitForSeconds(swapDuration/2 + 0.1f);
+
+        Transform tL = GameController.instance.playerControllerL.GetCurrentWeaponController().weaponVisualObj.transform;
+        LeanTween.move(tL.gameObject, new Vector3(-5, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+        Transform tR = GameController.instance.playerControllerR.GetCurrentWeaponController().weaponVisualObj.transform;
+        LeanTween.move(tR.gameObject, new Vector3(5, tR.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+        yield return new WaitForSeconds(weaponFlyTime + 0.1f);
+        //ApplyCard Effects
+        yield return new WaitForSeconds(weaponPreAttack);
+        LeanTween.move(tL.gameObject, new Vector3(-0.5f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
     }
 }

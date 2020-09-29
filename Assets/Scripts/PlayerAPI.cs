@@ -75,11 +75,9 @@ public static class PlayerAPI
 
     private static bool _UpgradeWeapon(PlayerController player, WeaponType weapon_t, WeaponAttribute attr)
     {
-        WeaponController weapon = player.GetWeapon(weapon_t);
-        int upgradePrice = weapon.GetUpgradePrice(attr);
-        if (upgradePrice >= 0 && player.coins >= upgradePrice)
+        if (player.CanUpgradeWeapon(weapon_t, attr))
         {
-            return weapon.Upgrade(attr);
+            return player.UpgradeWeapon(weapon_t, attr);
         }
         return false;
     }

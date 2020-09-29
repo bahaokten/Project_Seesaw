@@ -55,6 +55,7 @@ public class GameController : MonoBehaviour
     {
         playerControllerL = playerL.GetComponent<PlayerController>();
         playerControllerR = playerR.GetComponent<PlayerController>();
+        currPlayer = Player.L;
         activeCards = new Dictionary<Player, List<Cards.BaseCard>>();
         activeCards.Add(Player.L, new List<Cards.BaseCard>());
         activeCards.Add(Player.R, new List<Cards.BaseCard>());

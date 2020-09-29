@@ -1,8 +1,16 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    //Constants
+    static readonly string SCORE_PREFIX = "Score: ";
+    static readonly string COINS_PREFIX = "Coins: ";
+
+    public TextMeshProUGUI scoreDisplay;
+    public TextMeshProUGUI coinDisplay;
+
     public Player playerType;
     public PlayerMode playerMode;
 
@@ -18,8 +26,32 @@ public class PlayerController : MonoBehaviour
     public Dictionary<WeaponType, WeaponController> weapons;
 
     //Score related
-    public float score;
-    public float coins;
+    private float _score;
+    private float _coins;
+    public float coins
+    {
+        get
+        {
+            return _coins;
+        }
+        set
+        {
+            _coins = value;
+            coinDisplay.text = COINS_PREFIX + coins;
+        }
+    }
+    public float score
+    {
+        get
+        {
+            return _score;
+        }
+        set
+        {
+            _score = value;
+            scoreDisplay.text = SCORE_PREFIX + score;
+        }
+    }
 
     //Card related
     public List<Cards.BaseCard> cards;
@@ -27,26 +59,43 @@ public class PlayerController : MonoBehaviour
     public void Start()
     {
         score = 0;
-        coins = 0;
+        coins = 5;
         weapons = new Dictionary<WeaponType, WeaponController>();
         weapons.Add(WeaponType.Scissor, scissorController);
         weapons.Add(WeaponType.Paper, paperController);
         weapons.Add(WeaponType.Rock, rockController);
     }
 
-    public WeaponController GetWeapon(WeaponType type)
+    public WeaponController GetWeapon(WeaponType weapon_t)
     {
-        if (type == WeaponType.Scissor)
+        if (weapon_t == WeaponType.Scissor)
         {
             return scissorController;
-        } else if (type == WeaponType.Paper)
+        } else if (weapon_t == WeaponType.Paper)
         {
             return paperController;
-        } else if (type == WeaponType.Rock)
+        } else if (weapon_t == WeaponType.Rock)
         {
             return rockController;
         }
         return null;
+    }
+
+    public bool CanUpgradeWeapon(WeaponType weapon_t, WeaponAttribute attr)
+    {
+        WeaponController weapon = GetWeapon(weapon_t);
+        int upgradePrice = weapon.GetUpgradePrice(attr);
+        if (upgradePrice >= 0 && coins >= upgradePrice)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool UpgradeWeapon(WeaponType weapon_t, WeaponAttribute attr)
+    {
+        WeaponController weapon = GetWeapon(weapon_t);
+        return weapon.Upgrade(attr);
     }
 
     public WeaponController GetCurrentWeaponController()

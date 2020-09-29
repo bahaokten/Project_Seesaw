@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
+    //Constants
+    static readonly string ATTACK_PREFIX = "A: ";
+    static readonly string DEFENSE_PREFIX = "D: ";
+
+    //Variables
     public GameObject weaponVisualObj;
     public Vector3 weaponVisualInitPos;
 
@@ -17,8 +22,32 @@ public class WeaponController : MonoBehaviour
     public int attackLevel;
     public int defenseLevel;
 
-    public float baseAttack;
-    public float baseDefense;
+    private float _baseAttack;
+    private float _baseDefense;
+    public float baseAttack
+    {
+        get
+        {
+            return _baseAttack;
+        }
+        set
+        {
+            _baseAttack = value;
+            attackDisplay.text = ATTACK_PREFIX + _baseAttack;
+        }
+    }
+    public float baseDefense
+    {
+        get
+        {
+            return _baseDefense;
+        }
+        set
+        {
+            _baseDefense = value;
+            defenseDisplay.text = DEFENSE_PREFIX + _baseDefense;
+        }
+    }
 
     public float currentAttack;
     public float currentDefense;
@@ -35,13 +64,13 @@ public class WeaponController : MonoBehaviour
 
     public bool Upgrade(WeaponAttribute attr)
     {
-        if (attr == WeaponAttribute.Attack && attackLevel != GlobalVars.instance.maxWeaponLevel)
+        if (attr == WeaponAttribute.Attack && attackLevel != GlobalVars.maxWeaponLevel)
         {
             baseAttack += GlobalVars.WEAPON_LEVEL_UPGRADE_AMOUNT[attackLevel];
             attackLevel += 1;
             return true;
         }
-        if (attr == WeaponAttribute.Defense && defenseLevel != GlobalVars.instance.maxWeaponLevel)
+        if (attr == WeaponAttribute.Defense && defenseLevel != GlobalVars.maxWeaponLevel)
         {
             baseDefense += GlobalVars.WEAPON_LEVEL_UPGRADE_AMOUNT[defenseLevel];
             defenseLevel += 1;
@@ -53,11 +82,11 @@ public class WeaponController : MonoBehaviour
 
     public int GetUpgradePrice(WeaponAttribute attr)
     {
-        if (attr == WeaponAttribute.Attack && attackLevel != GlobalVars.instance.maxWeaponLevel)
+        if (attr == WeaponAttribute.Attack && attackLevel != GlobalVars.maxWeaponLevel)
         {
             return GlobalVars.WEAPON_LEVEL_UPGRADE_PRICES[attackLevel];
         }
-        if (attr == WeaponAttribute.Defense && defenseLevel != GlobalVars.instance.maxWeaponLevel)
+        if (attr == WeaponAttribute.Defense && defenseLevel != GlobalVars.maxWeaponLevel)
         {
             return GlobalVars.WEAPON_LEVEL_UPGRADE_PRICES[defenseLevel];
         }

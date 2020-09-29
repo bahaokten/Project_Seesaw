@@ -68,9 +68,7 @@ public class GlobalVars : MonoBehaviour
 
     public static readonly List<int> WEAPON_LEVEL_UPGRADE_PRICES = new List<int> { 5, 10, 20, 40 };
     public static readonly List<float> WEAPON_LEVEL_UPGRADE_AMOUNT = new List<float> { 0.5f, 0.5f, 0.5f, 0.5f };
-
-    //RUNTIME
-    public int maxWeaponLevel;
+    public static int maxWeaponLevel = WEAPON_LEVEL_UPGRADE_PRICES.Count;
 
     void Awake()
     {
@@ -82,16 +80,5 @@ public class GlobalVars : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        maxWeaponLevel = WEAPON_LEVEL_UPGRADE_PRICES.Count;
-    }
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
