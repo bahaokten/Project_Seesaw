@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
+    public GameObject weaponVisualObj;
+    public Vector3 weaponVisualInitPos;
+
     public WeaponType weaponType;
 
     public TextMeshProUGUI attackDisplay;
@@ -22,6 +25,8 @@ public class WeaponController : MonoBehaviour
 
     void Start()
     {
+        weaponVisualInitPos = weaponVisualObj.transform.position;
+
         attackLevel = 0;
         defenseLevel = 0;
         baseAttack = GlobalVars.INIT_ATTACK;

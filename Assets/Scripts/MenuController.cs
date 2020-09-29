@@ -13,6 +13,7 @@ public class MenuController : MonoBehaviour
     public GameObject useMenu;
     public GameObject upgradeMenu;
     public GameObject attackPhaseMenu;
+    public GameObject animateAttackWindow;
 
     public Dictionary<string, Vector3> menuLocTable;
 
@@ -46,7 +47,8 @@ public class MenuController : MonoBehaviour
             { actionPhaseMenu.name, actionPhaseMenu.transform.position },
             { useMenu.name, useMenu.transform.position },
             { upgradeMenu.name, upgradeMenu.transform.position },
-            { attackPhaseMenu.name, attackPhaseMenu.transform.position }
+            { attackPhaseMenu.name, attackPhaseMenu.transform.position },
+            { animateAttackWindow.name, animateAttackWindow.transform.position }
         };
     }
 
@@ -85,6 +87,9 @@ public class MenuController : MonoBehaviour
                 StartCoroutine(DoSwapAnimation(currMenuObj, attackPhaseMenu, MenuState.AttackPhaseMenu));
                 break;
             case "nonUIPlayerPlaying":
+                break;
+            case "animateAttack":
+                StartCoroutine(DoSwapOutPopInAnimation(currMenuObj, animateAttackWindow, MenuState.AnimatingAttack));
                 break;
         }
     }
@@ -134,6 +139,18 @@ public class MenuController : MonoBehaviour
         enteringObj.SetActive(true);
     }
 
+    IEnumerator DoSwapOutPopInAnimation(GameObject exitingObj, GameObject enteringObj, MenuState newState = MenuState.NaN)
+    {
+        if (exitingObj == enteringObj)
+        {
+            yield break;
+        }
+        AnimateExit(exitingObj, swapDuration / 2);
+        yield return new WaitForSeconds(swapDuration / 2);
+
+        DoSwap(exitingObj, enteringObj, newState);
+    }
+
     IEnumerator DoSwapAnimation(GameObject exitingObj, GameObject enteringObj, MenuState newState = MenuState.NaN)
     {
         if (exitingObj == enteringObj)
@@ -152,5 +169,6 @@ public class MenuController : MonoBehaviour
     {
         MenuController.instance.DoMenuStateChange("animateAttack");
         yield return new WaitForSeconds(swapDuration + 0.5f);
+        Transform t = GameController.instance.playerControllerL.GetCurrentWeaponController().weaponVisualObj.transform;
     }
 }
