@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7723019871295170636}
   - component: {fileID: 7723019871295170639}
   - component: {fileID: 7723019871295170638}
+  - component: {fileID: 6876096095187514358}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -100,6 +101,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6876096095187514358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7723019871295170632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72c8d03851a4f4344a40f5f3cb3882bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7723019871633531417
 GameObject:
   m_ObjectHideFlags: 0
@@ -289,7 +302,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7723019871832701075}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -11.49, y: 32.940002, z: 3.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -309,11 +322,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1900a69df7de47a4a9ef19e709d4e037, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponType: 0
+  weaponVisualObj: {fileID: 0}
+  weaponVisualInitPos: {x: 0, y: 0, z: 0}
+  weaponType: 2
   attackDisplay: {fileID: 7723019872193696276}
   defenseDisplay: {fileID: 7723019871633531423}
-  attack: 0
-  defense: 0
+  attackLevel: 0
+  defenseLevel: 0
+  currentAttack: 0
+  currentDefense: 0
 --- !u!1 &7723019872193696278
 GameObject:
   m_ObjectHideFlags: 0

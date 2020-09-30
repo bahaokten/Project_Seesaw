@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class UpgradeMenuButtonController : MonoBehaviour
 {
-    public static readonly string UPGRADE_COST_SUFFIX = " Coins";
-
     public WeaponType weaponType;
     public WeaponAttribute weaponAttr;
 
@@ -15,7 +13,7 @@ public class UpgradeMenuButtonController : MonoBehaviour
     {
         PlayerController currentPlayer = GameController.instance.GetCurrentPlayer();
 
-        transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = currentPlayer.GetWeapon(weaponType).GetUpgradePrice(weaponAttr) + UPGRADE_COST_SUFFIX;
+        transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = currentPlayer.GetWeapon(weaponType).GetUpgradePrice(weaponAttr) + GlobalVars.UPGRADE_COST_SUFFIX;
 
         if (currentPlayer.CanUpgradeWeapon(weaponType, weaponAttr))
         {

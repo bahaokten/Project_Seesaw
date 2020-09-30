@@ -6,7 +6,7 @@ public static class PlayerAPI
     public static bool BuyCard(PlayerController player, Type card_t)
     {
         Cards.BaseCard card = (Cards.BaseCard)Activator.CreateInstance(card_t);
-
+        
         if (GameController.instance.currTurnPhase != TurnPhase.BuyPhase || card.price > player.coins)
         {
             return false;
@@ -36,7 +36,7 @@ public static class PlayerAPI
             return false;
         }
 
-        if (UseCard(player, card_t))
+        if (_UseCard(player, card_t))
         {
             return EndActionPhase();
         }

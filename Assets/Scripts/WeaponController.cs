@@ -6,18 +6,16 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
-    //Constants
-    static readonly string ATTACK_PREFIX = "A: ";
-    static readonly string DEFENSE_PREFIX = "D: ";
-
     //Variables
     public GameObject weaponVisualObj;
     public Vector3 weaponVisualInitPos;
 
     public WeaponType weaponType;
 
-    public TextMeshProUGUI attackDisplay;
-    public TextMeshProUGUI defenseDisplay;
+    public WeaponTextController infoDisplay;
+
+    [HideInInspector]
+    public Player parentPlayer;
 
     public int attackLevel;
     public int defenseLevel;
@@ -33,7 +31,7 @@ public class WeaponController : MonoBehaviour
         set
         {
             _baseAttack = value;
-            attackDisplay.text = ATTACK_PREFIX + _baseAttack;
+            _EventBus.Publish<BaseWeaponAttrChanged>(new BaseWeaponAttrChanged(parentPlayer, weaponType, WeaponAttribute.Attack, value));
         }
     }
     public float baseDefense
@@ -45,12 +43,17 @@ public class WeaponController : MonoBehaviour
         set
         {
             _baseDefense = value;
-            defenseDisplay.text = DEFENSE_PREFIX + _baseDefense;
+            _EventBus.Publish<BaseWeaponAttrChanged>(new BaseWeaponAttrChanged(parentPlayer, weaponType, WeaponAttribute.Defense, value));
         }
     }
 
     public float currentAttack;
     public float currentDefense;
+
+    private void Awake()
+    {
+        infoDisplay.parent = this;
+    }
 
     void Start()
     {

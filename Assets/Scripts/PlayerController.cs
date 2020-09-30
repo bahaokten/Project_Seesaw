@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Xml.Serialization.Configuration;
 using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    //Constants
-    static readonly string SCORE_PREFIX = "Score: ";
-    static readonly string COINS_PREFIX = "Coins: ";
-
     public TextMeshProUGUI scoreDisplay;
     public TextMeshProUGUI coinDisplay;
 
@@ -37,7 +34,7 @@ public class PlayerController : MonoBehaviour
         set
         {
             _coins = value;
-            coinDisplay.text = COINS_PREFIX + coins;
+            coinDisplay.text = GlobalVars.COINS_PREFIX + coins;
         }
     }
     public float score
@@ -49,12 +46,19 @@ public class PlayerController : MonoBehaviour
         set
         {
             _score = value;
-            scoreDisplay.text = SCORE_PREFIX + score;
+            scoreDisplay.text = GlobalVars.SCORE_PREFIX + score;
         }
     }
 
     //Card related
     public List<Cards.BaseCard> cards;
+
+    public void Awake()
+    {
+        scissorController.parentPlayer = playerType;
+        paperController.parentPlayer = playerType;
+        rockController.parentPlayer = playerType;
+    }
 
     public void Start()
     {

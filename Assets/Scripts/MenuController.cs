@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class MenuController : MonoBehaviour
@@ -17,8 +18,23 @@ public class MenuController : MonoBehaviour
 
     public Dictionary<string, Vector3> menuLocTable;
 
-    [HideInInspector]
-    public MenuState currMenu;
+    private MenuState _currMenu;
+    public MenuState currMenu
+    {
+        get
+        {
+            return _currMenu;
+        }
+        set
+        {
+            if (value == _currMenu)
+            {
+                return;
+            }
+            _currMenu = value;
+            _EventBus.Publish<MenuStateChanged>(new MenuStateChanged(_currMenu));
+        }
+    }
     [HideInInspector]
     public GameObject currMenuObj;
 
@@ -210,7 +226,7 @@ public class MenuController : MonoBehaviour
         LeanTween.move(tR.gameObject, new Vector3(5, tR.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
         yield return new WaitForSeconds(weaponFlyTime + 0.1f);
         //ApplyCard Effects
-        yield return new WaitForSeconds(weaponPreAttack);
-        LeanTween.move(tL.gameObject, new Vector3(-0.5f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+        //yield return new WaitForSeconds(weaponPreAttack);
+        //LeanTween.move(tL.gameObject, new Vector3(-0.5f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
     }
 }

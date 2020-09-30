@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor.UIElements;
 
 public class Cards
 {
@@ -16,6 +17,35 @@ public class Cards
         player.cards.Remove(card);
         GameController.instance.activeCards[player.playerType].Add(card);
         card.DoPreAttackAction();
+    }
+
+    public class CardIterator
+    {
+        Player player_t;
+        PlayerController player;
+        int currCardIndex;
+
+        CardIterator(Player _player_t = Player.L)
+        {
+            player_t = _player_t;
+            player = GameController.instance.GetPlayer(player_t);
+        }
+
+        public BaseCard GetNextCard()
+        {
+            if (currCardIndex == GameController.instance.activeCards[player_t].Count - 1)
+            {
+                currCardIndex = 0;
+                if (player_t == Player.L)
+                {
+                    player_t = Player.R;
+                }else
+                {
+                    player_t = Player.L;
+                }
+            }
+            return GameController.instance.activeCards[player_t][currCardIndex++];
+        }
     }
 
     public abstract class BaseCard

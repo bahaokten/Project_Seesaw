@@ -70,6 +70,13 @@ public class GlobalVars : MonoBehaviour
     public static readonly List<float> WEAPON_LEVEL_UPGRADE_AMOUNT = new List<float> { 0.5f, 0.5f, 0.5f, 0.5f };
     public static int maxWeaponLevel = WEAPON_LEVEL_UPGRADE_PRICES.Count;
 
+    //SPRING CONSTANTS
+    public static readonly string ATTACK_PREFIX = "A: ";
+    public static readonly string DEFENSE_PREFIX = "D: ";
+    public static readonly string SCORE_PREFIX = "Score: ";
+    public static readonly string COINS_PREFIX = "Coins: ";
+    public static readonly string UPGRADE_COST_SUFFIX = " Coins";
+
     void Awake()
     {
         if (instance == null)

@@ -1596,7 +1596,6 @@ MonoBehaviour:
   upgradeMenu: {fileID: 1321337930}
   attackPhaseMenu: {fileID: 1541616367}
   animateAttackWindow: {fileID: 778639779}
-  currMenu: 0
   currMenuObj: {fileID: 0}
   swapDuration: 0.4
 --- !u!224 &322761726 stripped
@@ -2697,7 +2696,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &778639780
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8673,6 +8672,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Scissor
       objectReference: {fileID: 0}
+    - target: {fileID: 5743748581714071063, guid: 93eb4166b3ca67240a29d34c086586dc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5746041420744353483, guid: 93eb4166b3ca67240a29d34c086586dc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9062,11 +9066,6 @@ PrefabInstance:
       propertyPath: weaponVisualObj
       value: 
       objectReference: {fileID: 1481431322}
-    - target: {fileID: 7723019871832701073, guid: fd4d06adf52d93c4aa6b515b61e5f615,
-        type: 3}
-      propertyPath: weaponType
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 7723019871832701075, guid: fd4d06adf52d93c4aa6b515b61e5f615,
         type: 3}
       propertyPath: m_Name

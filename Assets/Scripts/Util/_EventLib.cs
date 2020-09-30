@@ -18,12 +18,29 @@ public abstract class BaseEvent
     }
 }
 
-public class EXAMPLE : BaseEvent
+public class MenuStateChanged : BaseEvent
 {
     public MenuState state;
 
-    public EXAMPLE(MenuState _state) 
+    public MenuStateChanged(MenuState _state) 
     {
         state = _state;
     }
+}
+
+public class BaseWeaponAttrChanged : BaseEvent
+{
+    public Player player_t;
+    public WeaponType weapon_t;
+    public WeaponAttribute weaponAttr;
+    public float newVal;
+
+    public BaseWeaponAttrChanged(Player _player_t, WeaponType _weapon_t, WeaponAttribute _weaponAttr, float _newVal)
+    {
+        player_t = _player_t;
+        weapon_t = _weapon_t;
+        weaponAttr = _weaponAttr;
+        newVal = _newVal;
+    }
+
 }
