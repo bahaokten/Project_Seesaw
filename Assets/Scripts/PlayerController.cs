@@ -70,6 +70,13 @@ public class PlayerController : MonoBehaviour
         weapons.Add(WeaponType.Rock, rockController);
     }
 
+    public void ResetAllCurrentWeaponStats()
+    {
+        scissorController.ResetCurrentStats();
+        paperController.ResetCurrentStats();
+        rockController.ResetCurrentStats();
+    }
+
     public WeaponController GetWeapon(WeaponType weapon_t)
     {
         if (weapon_t == WeaponType.Scissor)
@@ -99,7 +106,13 @@ public class PlayerController : MonoBehaviour
     public bool UpgradeWeapon(WeaponType weapon_t, WeaponAttribute attr)
     {
         WeaponController weapon = GetWeapon(weapon_t);
-        return weapon.Upgrade(attr);
+        int upgradePrice = weapon.GetUpgradePrice(attr);
+        if (weapon.Upgrade(attr))
+        {
+            coins -= upgradePrice;
+            return true;
+        }
+        return false;
     }
 
     public WeaponController GetCurrentWeaponController()

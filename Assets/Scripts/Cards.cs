@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using UnityEditor.UIElements;
 
 public class Cards
@@ -21,27 +22,25 @@ public class Cards
 
     public class CardIterator
     {
-        Player player_t;
-        PlayerController player;
+        Player player_t = Player.L;
         int currCardIndex;
 
-        CardIterator(Player _player_t = Player.L)
+        public CardIterator()
         {
-            player_t = _player_t;
-            player = GameController.instance.GetPlayer(player_t);
         }
 
         public BaseCard GetNextCard()
         {
-            if (currCardIndex == GameController.instance.activeCards[player_t].Count - 1)
+            if (currCardIndex == GameController.instance.activeCards[player_t].Count)
             {
                 currCardIndex = 0;
                 if (player_t == Player.L)
                 {
                     player_t = Player.R;
+                    return GetNextCard();
                 }else
                 {
-                    player_t = Player.L;
+                    return null;
                 }
             }
             return GameController.instance.activeCards[player_t][currCardIndex++];

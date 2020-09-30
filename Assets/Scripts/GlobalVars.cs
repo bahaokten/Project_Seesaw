@@ -11,7 +11,8 @@ public enum WeaponType
 public enum Player
 {
     R,
-    L
+    L,
+    NaN
 }
 
 public enum PlayerMode

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro.EditorUtilities;
 using UnityEngine;
+using CardIterator = Cards.CardIterator;
+using BaseCard = Cards.BaseCard;
 
 public class MenuController : MonoBehaviour
 {
@@ -215,18 +217,32 @@ public class MenuController : MonoBehaviour
 
     static float weaponFlyTime = 1f;
     static float weaponPreAttack = 0.5f;
-    public IEnumerator AnimateAttack(Action callback)
+
+    public IEnumerator AnimateAttack()
     {
         MenuController.instance.DoMenuStateChange("animateAttack");
         yield return new WaitForSeconds(swapDuration/2 + 0.1f);
 
+        // === MOVE PHASE ===
         Transform tL = GameController.instance.playerControllerL.GetCurrentWeaponController().weaponVisualObj.transform;
         LeanTween.move(tL.gameObject, new Vector3(-5, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
         Transform tR = GameController.instance.playerControllerR.GetCurrentWeaponController().weaponVisualObj.transform;
         LeanTween.move(tR.gameObject, new Vector3(5, tR.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
         yield return new WaitForSeconds(weaponFlyTime + 0.1f);
-        //ApplyCard Effects
+
+        // === APPLY CARDS PHASE ===
+        CardIterator cardIt = new CardIterator();
+        BaseCard nextCard = cardIt.GetNextCard();
+        while (nextCard != null)
+        {
+            //DO CARDS
+            nextCard = cardIt.GetNextCard();
+        }
         //yield return new WaitForSeconds(weaponPreAttack);
         //LeanTween.move(tL.gameObject, new Vector3(-0.5f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+
+        // === WIN PHASE ===
+        Tuple<Player, float> winT = GameController.instance.DetermineWinner();
+        print(winT.Item1);
     }
 }

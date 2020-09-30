@@ -47,8 +47,33 @@ public class WeaponController : MonoBehaviour
         }
     }
 
-    public float currentAttack;
-    public float currentDefense;
+    private float _currentAttack;
+    public float currentAttack
+    {
+        get
+        {
+            return _currentAttack;
+        }
+        set
+        {
+            _currentAttack = value;
+            _EventBus.Publish<CurrentWeaponAttrChanged>(new CurrentWeaponAttrChanged(parentPlayer, weaponType, WeaponAttribute.Attack, value));
+        }
+    }
+
+    private float _currentDefense;
+    public float currentDefense
+    {
+        get
+        {
+            return _currentDefense;
+        }
+        set
+        {
+            _currentDefense = value;
+            _EventBus.Publish<CurrentWeaponAttrChanged>(new CurrentWeaponAttrChanged(parentPlayer, weaponType, WeaponAttribute.Defense, value));
+        }
+    }
 
     private void Awake()
     {
@@ -63,6 +88,30 @@ public class WeaponController : MonoBehaviour
         defenseLevel = 0;
         baseAttack = GlobalVars.INIT_ATTACK;
         baseDefense = GlobalVars.INIT_DEFENSE;
+
+        ResetCurrentStats();
+    }
+
+    public void ResetCurrentStats()
+    {
+        currentAttack = baseAttack;
+        currentDefense = baseDefense;
+    }
+    
+    public WeaponType GetWeakType()
+    {
+        if (weaponType == WeaponType.Scissor)
+        {
+            return WeaponType.Rock;
+        }
+        else if (weaponType == WeaponType.Paper)
+        {
+            return WeaponType.Scissor;
+        }
+        else
+        {
+            return WeaponType.Paper;
+        }
     }
 
     public bool Upgrade(WeaponAttribute attr)
@@ -79,6 +128,7 @@ public class WeaponController : MonoBehaviour
             defenseLevel += 1;
             return true;
         }
+        print("cant upgrade man");
         //Can't upgrade
         return false;
     }

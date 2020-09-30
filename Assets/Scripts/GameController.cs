@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
+using CardIterator = Cards.CardIterator;
+using BaseCard = Cards.BaseCard;
+using System;
+using System.Xml;
 
 public class GameController : MonoBehaviour
 {
@@ -77,12 +79,22 @@ public class GameController : MonoBehaviour
         currState = GetNextState();
         if (currState == GameState.IssuingAttack)
         {
+            playerControllerL.ResetAllCurrentWeaponStats();
+            playerControllerR.ResetAllCurrentWeaponStats();
+
             if (GlobalVars.ANIMATE_ATTACK)
             {
-                StartCoroutine(MenuController.instance.AnimateAttack(Attack));
+                StartCoroutine(MenuController.instance.AnimateAttack());
             } else
             {
-                Attack();
+                CardIterator cardIt = new CardIterator();
+                BaseCard nextCard = cardIt.GetNextCard();
+                while (nextCard != null)
+                {
+                    //DO CARDS
+                    nextCard = cardIt.GetNextCard();
+                }
+                DetermineWinner();
             }
         } else
         {
@@ -99,9 +111,37 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void Attack()
+    public Tuple<Player, float> DetermineWinner()
     {
+        WeaponController LWeapon = playerControllerL.GetCurrentWeaponController();
+        WeaponController RWeapon = playerControllerR.GetCurrentWeaponController();
 
+        if (LWeapon.weaponType == RWeapon.weaponType)
+        {
+            if (LWeapon.currentAttack > RWeapon.currentAttack)
+            {
+                //player L wins
+                return new Tuple<Player, float>(Player.L, LWeapon.currentAttack - RWeapon.currentDefense);
+            }
+            else if(LWeapon.currentAttack < RWeapon.currentAttack)
+            {
+                //player R wins
+                return new Tuple<Player, float>(Player.R, RWeapon.currentAttack - LWeapon.currentDefense);
+            }
+            else
+            {
+                //stalemate
+                return new Tuple<Player, float>(Player.NaN, 0f);
+            }
+        } else if (LWeapon.GetWeakType() == RWeapon.weaponType)
+        {
+            //player R wins
+            return new Tuple<Player, float>(Player.R, RWeapon.currentAttack - LWeapon.currentDefense);
+        }
+        {
+            //player L wins
+            return new Tuple<Player, float>(Player.L, LWeapon.currentAttack - RWeapon.currentDefense);
+        }
     }
 
 

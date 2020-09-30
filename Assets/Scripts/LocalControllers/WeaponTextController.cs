@@ -46,8 +46,6 @@ public class WeaponTextController : MonoBehaviour
 
     void _OnBaseWeaponAttrChange(BaseWeaponAttrChanged e)
     {
-        print(parent.parentPlayer);
-        print(parent.weaponType);
         if (e.player_t == parent.parentPlayer && e.weapon_t == parent.weaponType)
         {
             if (e.weaponAttr == WeaponAttribute.Attack)

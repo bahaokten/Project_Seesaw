@@ -42,5 +42,20 @@ public class BaseWeaponAttrChanged : BaseEvent
         weaponAttr = _weaponAttr;
         newVal = _newVal;
     }
+}
 
+public class CurrentWeaponAttrChanged : BaseEvent
+{
+    public Player player_t;
+    public WeaponType weapon_t;
+    public WeaponAttribute weaponAttr;
+    public float newVal;
+
+    public CurrentWeaponAttrChanged(Player _player_t, WeaponType _weapon_t, WeaponAttribute _weaponAttr, float _newVal)
+    {
+        player_t = _player_t;
+        weapon_t = _weapon_t;
+        weaponAttr = _weaponAttr;
+        newVal = _newVal;
+    }
 }
