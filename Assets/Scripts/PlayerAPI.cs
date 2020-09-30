@@ -102,7 +102,7 @@ public static class PlayerAPI
             return false;
         }
 
-        GameController.instance.PlayerTurnOver(weapon_t);
+        GameController.instance.PlayerPickedWeapon(weapon_t);
 
         return false;
     }

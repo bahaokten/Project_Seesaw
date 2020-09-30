@@ -122,13 +122,13 @@ public class MenuController : MonoBehaviour
         switch (action)
         {
             case "scissor":
-                GameController.instance.PlayerTurnOver(WeaponType.Scissor);
+                GameController.instance.PlayerPickedWeapon(WeaponType.Scissor);
                 break;
             case "paper":
-                GameController.instance.PlayerTurnOver(WeaponType.Paper);
+                GameController.instance.PlayerPickedWeapon(WeaponType.Paper);
                 break;
             case "rock":
-                GameController.instance.PlayerTurnOver(WeaponType.Rock);
+                GameController.instance.PlayerPickedWeapon(WeaponType.Rock);
                 break;
         }
 
@@ -198,6 +198,7 @@ public class MenuController : MonoBehaviour
         AnimateExit(exitingObj, swapDuration / 2);
         yield return new WaitForSeconds(swapDuration / 2);
 
+        enteringObj.transform.position = menuLocTable[enteringObj.name];
         DoSwap(exitingObj, enteringObj, newState);
     }
 
@@ -216,7 +217,12 @@ public class MenuController : MonoBehaviour
     }
 
     static float weaponFlyTime = 1f;
+    static float weaponSizeChangeTime = 0.2f;
+    static float weaponFlyBounceBackTime = 0.5f;
     static float weaponPreAttack = 0.5f;
+    static float winningTextDisplayTime = 3f;
+    static float winnerScale = 1.2f;
+    static float loserScale = 0.8f;
 
     public IEnumerator AnimateAttack()
     {
@@ -224,9 +230,12 @@ public class MenuController : MonoBehaviour
         yield return new WaitForSeconds(swapDuration/2 + 0.1f);
 
         // === MOVE PHASE ===
-        Transform tL = GameController.instance.playerControllerL.GetCurrentWeaponController().weaponVisualObj.transform;
+        WeaponController weaponL = GameController.instance.playerControllerL.GetCurrentWeaponController();
+        Transform tL = weaponL.weaponVisualObj.transform;
         LeanTween.move(tL.gameObject, new Vector3(-5, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
-        Transform tR = GameController.instance.playerControllerR.GetCurrentWeaponController().weaponVisualObj.transform;
+
+        WeaponController weaponR = GameController.instance.playerControllerR.GetCurrentWeaponController();
+        Transform tR = weaponR.weaponVisualObj.transform;
         LeanTween.move(tR.gameObject, new Vector3(5, tR.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
         yield return new WaitForSeconds(weaponFlyTime + 0.1f);
 
@@ -235,14 +244,47 @@ public class MenuController : MonoBehaviour
         BaseCard nextCard = cardIt.GetNextCard();
         while (nextCard != null)
         {
-            //DO CARDS
+            //TODO: Card logic
             nextCard = cardIt.GetNextCard();
         }
-        //yield return new WaitForSeconds(weaponPreAttack);
-        //LeanTween.move(tL.gameObject, new Vector3(-0.5f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
 
         // === WIN PHASE ===
-        Tuple<Player, float> winT = GameController.instance.DetermineWinner();
-        print(winT.Item1);
+        Tuple<Player, float> winnerData = GameController.instance.DetermineWinner();
+        float coins = GameController.CalculateCoins(winnerData.Item2);
+        yield return new WaitForSeconds(weaponPreAttack);
+
+        Vector3 tlScale = tL.localScale;
+        Vector3 tRScale = tR.localScale;
+        if (winnerData.Item1 == Player.L)
+        {
+            LeanTween.move(tL.gameObject, new Vector3(0.2f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+            LeanTween.move(tR.gameObject, new Vector3(0.1f, tR.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+            yield return new WaitForSeconds(weaponFlyTime - 0.3f);
+            LeanTween.scale(tL.gameObject, tL.localScale * winnerScale, weaponSizeChangeTime);
+            LeanTween.scale(tR.gameObject, tR.localScale * loserScale, weaponSizeChangeTime);
+            LeanTween.move(tR.gameObject, new Vector3(4f, tR.position.y, 0), weaponFlyBounceBackTime).setEase(LeanTweenType.easeOutExpo);
+            currMenuObj.GetComponent<AnimateAttackWindowController>().EnableWinnerText(Player.L, coins);
+        } else if (winnerData.Item1 == Player.R)
+        {
+            LeanTween.move(tR.gameObject, new Vector3(-0.2f, tR.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+            LeanTween.move(tL.gameObject, new Vector3(0.1f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+            yield return new WaitForSeconds(weaponFlyTime - 0.3f);
+            LeanTween.scale(tR.gameObject, tR.localScale * winnerScale, weaponSizeChangeTime);
+            LeanTween.scale(tL.gameObject, tL.localScale * loserScale, weaponSizeChangeTime);
+            LeanTween.move(tL.gameObject, new Vector3(-4f, tL.position.y, 0), weaponFlyBounceBackTime).setEase(LeanTweenType.easeOutExpo);
+            currMenuObj.GetComponent<AnimateAttackWindowController>().EnableWinnerText(Player.R, coins);
+        } else {
+            LeanTween.move(tR.gameObject, new Vector3(-0.5f, tR.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+            LeanTween.move(tL.gameObject, new Vector3(0.5f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+            currMenuObj.GetComponent<AnimateAttackWindowController>().EnableWinnerText(Player.NaN, coins);
+        }
+        // === RESET PHASE ===
+        yield return new WaitForSeconds(winningTextDisplayTime);
+        LeanTween.scale(tR.gameObject, tRScale, weaponFlyTime);
+        LeanTween.scale(tL.gameObject, tlScale, weaponFlyTime);
+        LeanTween.move(tL.gameObject, weaponL.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+        LeanTween.move(tR.gameObject, weaponR.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+        GameController.instance.RegisterWinner(winnerData);
+        GameController.instance.GamePhaseOver();
     }
 }

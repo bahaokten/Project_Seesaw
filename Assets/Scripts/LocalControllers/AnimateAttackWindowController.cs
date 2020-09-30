@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 public class AnimateAttackWindowController : MonoBehaviour
 {
     public GameObject PLDisplay;
 
     public GameObject PRDisplay;
+
+    public GameObject WinnerText;
 
     Subscription<CurrentWeaponAttrChanged> CurrentWeaponAttrChangedEventSubscription;
 
@@ -23,6 +25,7 @@ public class AnimateAttackWindowController : MonoBehaviour
 
     private void OnEnable()
     {
+        WinnerText.SetActive(false);
         PlayerController pL = GameController.instance.GetPlayer(Player.L);
         WeaponController currentLWeapon = pL.GetWeapon(pL.currentWeapon);
 
@@ -39,6 +42,23 @@ public class AnimateAttackWindowController : MonoBehaviour
         {
             CurrentWeaponAttrChangedEventSubscription = _EventBus.Subscribe<CurrentWeaponAttrChanged>(_OnCurrentWeaponAttrChange);
         }
+    }
+
+    public void EnableWinnerText(Player winner, float coinAmount)
+    {
+        if (winner == Player.L)
+        {
+            WinnerText.GetComponent<TextMeshProUGUI>().text = GlobalVars.ROUND_WIN_DISPLAY_TEXT[0] + "L" + GlobalVars.ROUND_WIN_DISPLAY_TEXT[1] + coinAmount + GlobalVars.ROUND_WIN_DISPLAY_TEXT[2];
+        }
+        else if (winner == Player.R)
+        {
+            WinnerText.GetComponent<TextMeshProUGUI>().text = GlobalVars.ROUND_WIN_DISPLAY_TEXT[0] + "R" + GlobalVars.ROUND_WIN_DISPLAY_TEXT[1] + coinAmount + GlobalVars.ROUND_WIN_DISPLAY_TEXT[2];
+        } else
+        {
+            WinnerText.GetComponent<TextMeshProUGUI>().text = GlobalVars.ROUND_STALEMATE_DISPLAY_TEXT;
+        }
+
+        WinnerText.SetActive(true);
     }
 
     void _OnCurrentWeaponAttrChange(CurrentWeaponAttrChanged e)

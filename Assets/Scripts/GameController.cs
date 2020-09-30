@@ -72,10 +72,14 @@ public class GameController : MonoBehaviour
     {
     }
 
-    public void PlayerTurnOver(WeaponType weapon_t)
+    public void PlayerPickedWeapon(WeaponType weapon_t)
     {
         GetPlayer(currPlayer).currentWeapon = weapon_t;
+        GamePhaseOver();
+    }
 
+    public void GamePhaseOver()
+    {
         currState = GetNextState();
         if (currState == GameState.IssuingAttack)
         {
@@ -108,6 +112,17 @@ public class GameController : MonoBehaviour
             {
                 MenuController.instance.DoMenuStateChange("nonUIPlayerPlaying");
             }
+        }
+    }
+
+    public static float CalculateCoins(float attackDamage)
+    {
+        if (attackDamage <= 0)
+        {
+            return GlobalVars.WINNING_ROUND_BASE_COINS;
+        }else
+        {
+            return attackDamage + GlobalVars.WINNING_ROUND_BASE_COINS;
         }
     }
 
@@ -144,6 +159,18 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void RegisterWinner(Tuple<Player, float> winnerData)
+    {
+        if (winnerData.Item1 == Player.L)
+        {
+            playerControllerL.score++;
+            playerControllerL.coins += CalculateCoins(winnerData.Item2);
+        } else if (winnerData.Item1 == Player.R)
+        {
+            playerControllerR.score++;
+            playerControllerR.coins += CalculateCoins(winnerData.Item2);
+        }
+    }
 
     public GameState GetNextState()
     {

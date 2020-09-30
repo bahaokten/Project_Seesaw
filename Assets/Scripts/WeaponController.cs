@@ -137,11 +137,11 @@ public class WeaponController : MonoBehaviour
     {
         if (attr == WeaponAttribute.Attack && attackLevel != GlobalVars.maxWeaponLevel)
         {
-            return GlobalVars.WEAPON_LEVEL_UPGRADE_PRICES[attackLevel];
+            return GlobalVars.WEAPON_LEVEL_UPGRADE_PRICES_ATTACK[attackLevel];
         }
         if (attr == WeaponAttribute.Defense && defenseLevel != GlobalVars.maxWeaponLevel)
         {
-            return GlobalVars.WEAPON_LEVEL_UPGRADE_PRICES[defenseLevel];
+            return GlobalVars.WEAPON_LEVEL_UPGRADE_PRICES_DEFENSE[defenseLevel];
         }
         //Can't upgrade
         return -1;

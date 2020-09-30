@@ -39,8 +39,12 @@ public class WeaponTextController : MonoBehaviour
     {
         if (e.state == MenuState.AnimatingAttack)
         {
-            transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "";
-            transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+            transform.GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(1).gameObject.SetActive(false);
+        } else
+        {
+            transform.GetChild(0).gameObject.SetActive(true);
+            transform.GetChild(1).gameObject.SetActive(true);
         }
     }
 
