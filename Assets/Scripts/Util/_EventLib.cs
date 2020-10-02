@@ -20,7 +20,8 @@ public abstract class BaseEvent
 
 public abstract class PlayerBaseEvent : BaseEvent
 {
-    protected PlayerController player;
+    public PlayerController player;
+
     public PlayerBaseEvent(PlayerController _player) 
     {
         player = _player;
@@ -49,11 +50,33 @@ public class CardPurchased : PlayerBaseEvent
     }
 }
 
+public class CardUsed : PlayerBaseEvent
+{
+    public CardType type;
+
+    public CardUsed(PlayerController _player, CardType _type) : base(_player)
+    {
+        type = _type;
+    }
+}
+
 public class WeaponUpgraded : PlayerBaseEvent
 {
     public WeaponType type;
+    public WeaponAttribute attr;
 
-    public WeaponUpgraded(PlayerController _player, WeaponType _type) : base(_player)
+    public WeaponUpgraded(PlayerController _player, WeaponType _type, WeaponAttribute _attr) : base(_player)
+    {
+        type = _type;
+        attr = _attr;
+    }
+}
+
+public class AttackWeaponPicked : PlayerBaseEvent
+{
+    public WeaponType type;
+
+    public AttackWeaponPicked(PlayerController _player, WeaponType _type) : base(_player)
     {
         type = _type;
     }
