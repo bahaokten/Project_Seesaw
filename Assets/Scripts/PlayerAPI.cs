@@ -5,7 +5,7 @@ public static class PlayerAPI
     //=========== BUY PHASE ===========
     public static bool BuyCard(PlayerController player, Type card_t)
     {
-        Cards.BaseCard card = (Cards.BaseCard)Activator.CreateInstance(card_t);
+        BaseCard card = (BaseCard)Activator.CreateInstance(card_t);
         
         if (GameController.instance.currTurnPhase != TurnPhase.BuyPhase || card.price > player.coins)
         {
@@ -46,11 +46,11 @@ public static class PlayerAPI
 
     private static bool _UseCard(PlayerController player, Type card_t)
     {
-        foreach (Cards.BaseCard card in player.cards)
+        foreach (BaseCard card in player.cards)
         {
             if (card.GetType() == card_t)
             {
-                Cards.UseCard(player, card);
+                CardController.UseCard(player, card);
                 return true;
             }
         }

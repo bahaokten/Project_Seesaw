@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     }
 
     //Card related
-    public List<Cards.BaseCard> cards;
+    public List<BaseCard> cards;
 
     public void Awake()
     {

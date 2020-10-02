@@ -1,15 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UnityEditor;
 using UnityEditor.UIElements;
 
-public class Cards
+public struct CardData
+{
+    public float price;
+    public int priority;
+    public Dictionary<CardModificationType, float> modifications;
+
+    public CardData(float _price, int _priority = 5, Dictionary<CardModificationType, float>  _modifications = default)
+    {
+        price = _price;
+        priority = _priority;
+        if (_modifications == default)
+        {
+            modifications = null;
+        } else
+        {
+            modifications = _modifications;
+        }
+    }
+}
+
+public class CardController
 {
     private static int _currAvailableCardId = 0;
-    public static int currAvailableCardId{
+    public static int currAvailableCardId {
         get
         {
-            _currAvailableCardId += 1;
-            return _currAvailableCardId - 1;
+            return _currAvailableCardId++;
         }
     }
 
@@ -38,7 +59,7 @@ public class Cards
                 {
                     player_t = Player.R;
                     return GetNextCard();
-                }else
+                } else
                 {
                     return null;
                 }
@@ -47,13 +68,32 @@ public class Cards
         }
     }
 
+    public static class CardFactory
+    {
+        public static BaseCard GetCard(CardType type)
+        {
+            switch (type)
+            {
+                case CardType.SelfAttackIncreaseAdditiveCurrent1:
+                    return new SelfAttackIncreaseAdditiveCurrent1(GlobalVars.cardData[CardType.SelfAttackIncreaseAdditiveCurrent1]);
+                case CardType.SelfDefenseIncreaseAdditiveScissor1:
+                    return new SelfDefenseIncreaseAdditiveScissor1(GlobalVars.cardData[CardType.SelfDefenseIncreaseAdditiveScissor1]);
+                case CardType.OpponentDefenseDecreaseAdditiveScissor1:
+                    return new OpponentDefenseDecreaseAdditiveScissor1(GlobalVars.cardData[CardType.OpponentDefenseDecreaseAdditiveScissor1]);
+                case CardType.OpponentDefenseDecreaseMultScissor1:
+                    return new OpponentDefenseDecreaseMultScissor1(GlobalVars.cardData[CardType.OpponentDefenseDecreaseMultScissor1]);
+            }
+            return null;
+        }
+    }
+}
     public abstract class BaseCard
     {
         public int cardId;
 
         public int priority = 5; //Lower priority card is issued first
 
-        public int price;
+        public float price;
 
         private int _lifeSpan;
         protected int lifeSpan
@@ -74,7 +114,7 @@ public class Cards
 
         public BaseCard()
         {
-            cardId = currAvailableCardId;
+            cardId = CardController.currAvailableCardId;
         }
 
         public override bool Equals(Object obj)
@@ -113,9 +153,13 @@ public class Cards
 
     public class SelfAttackIncreaseAdditiveCurrent1 : BaseCard
     {
-        public SelfAttackIncreaseAdditiveCurrent1()
+        protected float attackIncrease;
+
+        public SelfAttackIncreaseAdditiveCurrent1(CardData data)
         {
-            price = 2;
+            price = data.price;
+            priority = data.priority;
+            attackIncrease = data.modifications[CardModificationType.IncrementAttack];
         }
 
         public override void DoPreAttackAction()
@@ -132,9 +176,10 @@ public class Cards
 
     public class SelfDefenseIncreaseAdditiveScissor1 : BaseCard
     {
-        public SelfDefenseIncreaseAdditiveScissor1()
+        public SelfDefenseIncreaseAdditiveScissor1(CardData data)
         {
-            price = 2;
+            price = data.price;
+            priority = data.priority;
         }
 
         public override void DoPreAttackAction()
@@ -151,9 +196,10 @@ public class Cards
 
     public class OpponentDefenseDecreaseAdditiveScissor1 : BaseCard
     {
-        public OpponentDefenseDecreaseAdditiveScissor1()
+        public OpponentDefenseDecreaseAdditiveScissor1(CardData data)
         {
-            price = 3;
+            price = data.price;
+            priority = data.priority;
         }
 
         public override void DoPreAttackAction()
@@ -170,10 +216,10 @@ public class Cards
 
     public class OpponentDefenseDecreaseMultScissor1 : BaseCard
     {
-        public OpponentDefenseDecreaseMultScissor1()
+        public OpponentDefenseDecreaseMultScissor1(CardData data)
         {
-            priority = 3;
-            price = 3;
+            price = data.price;
+            priority = data.priority;
         }
 
         public override void DoPreAttackAction()
@@ -188,5 +234,3 @@ public class Cards
             base.DoPostAttackAction();
         }
     }
-
-}

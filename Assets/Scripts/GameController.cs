@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CardIterator = Cards.CardIterator;
-using BaseCard = Cards.BaseCard;
+using CardIterator = CardController.CardIterator;
 using System;
 using System.Xml;
 
@@ -36,10 +35,12 @@ public class GameController : MonoBehaviour
 
     public GameObject playerL;
     public GameObject playerR;
+    [HideInInspector]
     public PlayerController playerControllerL;
+    [HideInInspector]
     public PlayerController playerControllerR;
 
-    public Dictionary<Player, List<Cards.BaseCard>> activeCards;
+    public Dictionary<Player, List<BaseCard>> activeCards;
 
     void Awake()
     {
@@ -58,9 +59,9 @@ public class GameController : MonoBehaviour
         playerControllerL = playerL.GetComponent<PlayerController>();
         playerControllerR = playerR.GetComponent<PlayerController>();
         currPlayer = Player.L;
-        activeCards = new Dictionary<Player, List<Cards.BaseCard>>();
-        activeCards.Add(Player.L, new List<Cards.BaseCard>());
-        activeCards.Add(Player.R, new List<Cards.BaseCard>());
+        activeCards = new Dictionary<Player, List<BaseCard>>();
+        activeCards.Add(Player.L, new List<BaseCard>());
+        activeCards.Add(Player.R, new List<BaseCard>());
     }
 
     void Update()
@@ -126,6 +127,7 @@ public class GameController : MonoBehaviour
         }
     }
 
+    //<player, damage dealt>
     public Tuple<Player, float> DetermineWinner()
     {
         WeaponController LWeapon = playerControllerL.GetCurrentWeaponController();

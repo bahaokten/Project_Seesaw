@@ -18,6 +18,49 @@ public abstract class BaseEvent
     }
 }
 
+public abstract class PlayerBaseEvent : BaseEvent
+{
+    protected PlayerController player;
+    public PlayerBaseEvent(PlayerController _player) 
+    {
+        player = _player;
+    } 
+}
+
+//Game
+
+public class TurnPhaseChanged : PlayerBaseEvent
+{
+    public TurnPhase phase;
+
+    public TurnPhaseChanged(PlayerController _player, TurnPhase _phase) : base(_player)
+    {
+        phase = _phase;
+    }
+}
+
+public class CardPurchased : PlayerBaseEvent
+{
+    public CardType type;
+
+    public CardPurchased(PlayerController _player, CardType _type) : base(_player)
+    {
+        type = _type;
+    }
+}
+
+public class WeaponUpgraded : PlayerBaseEvent
+{
+    public WeaponType type;
+
+    public WeaponUpgraded(PlayerController _player, WeaponType _type) : base(_player)
+    {
+        type = _type;
+    }
+}
+
+//UI
+
 public class MenuStateChanged : BaseEvent
 {
     public MenuState state;

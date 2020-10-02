@@ -54,6 +54,23 @@ public enum TurnPhase
     AttackPhase
 }
 
+public enum CardType
+{
+    BaseCard,
+    SelfAttackIncreaseAdditiveCurrent1,
+    SelfDefenseIncreaseAdditiveScissor1,
+    OpponentDefenseDecreaseAdditiveScissor1,
+    OpponentDefenseDecreaseMultScissor1,
+}
+
+public enum CardModificationType
+{
+    IncrementAttack,
+    IncrementDefense,
+    MultiplyAttack,
+    MultiplyDefense
+}
+
 public class GlobalVars : MonoBehaviour
 {
     public static GlobalVars instance;
@@ -73,6 +90,15 @@ public class GlobalVars : MonoBehaviour
     public static readonly List<int> WEAPON_LEVEL_UPGRADE_PRICES_DEFENSE = new List<int> { 2, 4, 8, 16 };
     public static readonly List<float> WEAPON_LEVEL_UPGRADE_AMOUNT = new List<float> { 0.5f, 0.5f, 0.5f, 0.5f };
     public static int maxWeaponLevel = WEAPON_LEVEL_UPGRADE_AMOUNT.Count;
+
+    public static readonly Dictionary<CardType, CardData> cardData = new Dictionary<CardType, CardData>()
+    {
+        { CardType.BaseCard, new CardData(0) },
+        { CardType.SelfAttackIncreaseAdditiveCurrent1, new CardData(2, _modifications : new Dictionary<CardModificationType, float>() { { CardModificationType.IncrementAttack, 0.5f } }) },
+        { CardType.SelfDefenseIncreaseAdditiveScissor1, new CardData(2) },
+        { CardType.OpponentDefenseDecreaseAdditiveScissor1, new CardData(3) },
+        { CardType.OpponentDefenseDecreaseMultScissor1, new CardData(3, 3) }
+    };
 
     //SPRING CONSTANTS
     public static readonly string ATTACK_PREFIX = "A: ";

@@ -2,8 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CardIterator = Cards.CardIterator;
-using BaseCard = Cards.BaseCard;
+using CardIterator = CardController.CardIterator;
 
 public class MenuController : MonoBehaviour
 {
