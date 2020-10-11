@@ -16,6 +16,11 @@ public abstract class BaseEvent
     {
         return "E| Event id: " + eventId;
     }
+
+    public string GetTypeString()
+    {
+        return GetType().ToString();
+    }
 }
 
 public abstract class PlayerBaseEvent : BaseEvent
@@ -79,6 +84,16 @@ public class AttackWeaponPicked : PlayerBaseEvent
     public AttackWeaponPicked(PlayerController _player, WeaponType _type) : base(_player)
     {
         type = _type;
+    }
+}
+
+//Internal
+
+public class GameStateOver
+{
+    public GameStateOver()
+    {
+
     }
 }
 

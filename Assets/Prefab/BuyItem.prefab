@@ -352,6 +352,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 969816858614112207}
+  - component: {fileID: 8365080912199169116}
   m_Layer: 5
   m_Name: BuyItem
   m_TagString: Untagged
@@ -383,6 +384,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8365080912199169116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4051582857742104217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26faaeda75fce664aaeed8fa2450f326, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  image: {fileID: 5887334577530129443}
+  title: {fileID: 8089610676827829189}
+  description: {fileID: 1771531501405572931}
+  cost: {fileID: 632948057289348823}
+  button: {fileID: 5671387406471220835}
 --- !u!1 &8080174708118944846
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,6 +556,46 @@ PrefabInstance:
       propertyPath: m_Interactable
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114596719383848118, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
+        type: 3}
+      propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114596719383848118, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
+        type: 3}
+      propertyPath: buttonText
+      value: Buy
+      objectReference: {fileID: 0}
+    - target: {fileID: 114596719383848118, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
+        type: 3}
+      propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8365080912199169116}
+    - target: {fileID: 114596719383848118, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
+        type: 3}
+      propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: BuyItemController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 114596719383848118, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
+        type: 3}
+      propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: DoCardPurchased
+      objectReference: {fileID: 0}
+    - target: {fileID: 114596719383848118, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
+        type: 3}
+      propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114596719383848118, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
+        type: 3}
+      propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 114596719383848118, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
+        type: 3}
+      propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 114902089163191894, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
         type: 3}
       propertyPath: m_HorizontalAlignment
@@ -555,7 +614,7 @@ PrefabInstance:
     - target: {fileID: 114902089163191894, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
         type: 3}
       propertyPath: m_text
-      value: NIGHT
+      value: Buy
       objectReference: {fileID: 0}
     - target: {fileID: 224048302966237324, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
         type: 3}
@@ -665,3 +724,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 5702087356838180223}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5671387406471220835 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114053377121499932, guid: 1be0f75aaff35b84bbf25fde5ebb4cac,
+    type: 3}
+  m_PrefabInstance: {fileID: 5702087356838180223}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

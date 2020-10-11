@@ -65,7 +65,7 @@ public class AnimateAttackWindowController : MonoBehaviour
     {
         //Assumes only displayed weapon is chaning value so no need to check for weapon type
         GameObject PDisplay;
-        int attrIndex;
+
         if (e.player_t == Player.L)
         {
             PDisplay = PLDisplay;
@@ -75,12 +75,12 @@ public class AnimateAttackWindowController : MonoBehaviour
         }
         if (e.weaponAttr == WeaponAttribute.Attack)
         {
-            attrIndex = 0;
-        }else
-        {
-            attrIndex = 1;
+            PDisplay.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = GlobalVars.ATTACK_PREFIX + e.newVal;
         }
-        PDisplay.transform.GetChild(attrIndex).GetComponent<TextMeshProUGUI>().text = GlobalVars.ATTACK_PREFIX + e.newVal;
+        else
+        {
+            PDisplay.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = GlobalVars.DEFENSE_PREFIX + e.newVal;
+        }
     }
 }
 

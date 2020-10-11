@@ -13,7 +13,7 @@ public class UpgradeMenuButtonController : MonoBehaviour
     {
         PlayerController currentPlayer = GameController.instance.GetCurrentPlayer();
 
-        transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = currentPlayer.GetWeapon(weaponType).GetUpgradePrice(weaponAttr) + GlobalVars.UPGRADE_COST_SUFFIX;
+        transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = currentPlayer.GetWeapon(weaponType).GetUpgradePrice(weaponAttr) + GlobalVars.CURRENCY_SUFFIX;
 
         if (currentPlayer.CanUpgradeWeapon(weaponType, weaponAttr))
         {

@@ -63,6 +63,9 @@ public class PlayerController : MonoBehaviour
     {
         score = 0;
         coins = 5;
+
+        cards = new List<BaseCard>();
+
         weapons = new Dictionary<WeaponType, WeaponController>();
         weapons.Add(WeaponType.Scissor, scissorController);
         weapons.Add(WeaponType.Paper, paperController);

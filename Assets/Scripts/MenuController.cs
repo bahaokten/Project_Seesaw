@@ -32,13 +32,14 @@ public class MenuController : MonoBehaviour
                 return;
             }
             _currMenu = value;
-            _EventBus.Publish<MenuStateChanged>(new MenuStateChanged(_currMenu));
         }
     }
     [HideInInspector]
     public GameObject currMenuObj;
 
     public float swapDuration = 0.4f;
+
+    Subscription<MenuStateChanged> MenuStateChangedSubscription;
 
     void Awake()
     {
@@ -50,6 +51,8 @@ public class MenuController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        MenuStateChangedSubscription = _EventBus.Subscribe<MenuStateChanged>(_OnMenuStateChange);
     }
 
     void Start()
@@ -75,39 +78,53 @@ public class MenuController : MonoBehaviour
 
     void OnDestroy()
     {
+        _EventBus.Unsubscribe<MenuStateChanged>(MenuStateChangedSubscription);
+    }
+
+    private MenuState StringToMenuState(string s)
+    {
+        switch (s)
+        {
+            default:
+                return MenuState.BuyPhaseMenu;
+            case "buyPhaseMenu":
+                return MenuState.BuyPhaseMenu;
+            case "buyMenu":
+                return MenuState.BuyMenu;    
+            case "actionPhaseMenu":
+                return MenuState.ActionPhaseMenu;
+            case "useMenu":
+                return MenuState.UseMenu;
+            case "upgradeMenu":
+                return MenuState.UpgradeMenu;
+            case "attackPhaseMenu":
+                return MenuState.AttackPhaseMenu;
+            case "nonUIPlayerPlaying":
+                return MenuState.NonUIPlayerPlaying;
+            case "animateAttack":
+                return MenuState.AnimatingAttack;
+        }
     }
 
     public void DoMenuStateChange(string action)
     {
-        switch (action)
+        MenuState newState = StringToMenuState(action);
+        if (newState == currMenu)
         {
-            case "buyPhaseMenu":
-                GameController.instance.currTurnPhase = TurnPhase.BuyPhase;
-                StartCoroutine(DoSwapAnimation(currMenuObj, buyPhaseMenu, MenuState.BuyPhaseMenu));
-                break;
-            case "buyMenu":
-                StartCoroutine(DoSwapAnimation(currMenuObj, buyMenu, MenuState.BuyMenu));
-                break;
-            case "actionPhaseMenu":
-                GameController.instance.currTurnPhase = TurnPhase.ActionPhase;
-                StartCoroutine(DoSwapAnimation(currMenuObj, actionPhaseMenu, MenuState.ActionPhaseMenu));
-                break;
-            case "useMenu":
-                StartCoroutine(DoSwapAnimation(currMenuObj, useMenu, MenuState.UseMenu));
-                break;
-            case "upgradeMenu":
-                StartCoroutine(DoSwapAnimation(currMenuObj, upgradeMenu, MenuState.UpgradeMenu));
-                break;
-            case "attackPhaseMenu":
-                GameController.instance.currTurnPhase = TurnPhase.AttackPhase;
-                StartCoroutine(DoSwapAnimation(currMenuObj, attackPhaseMenu, MenuState.AttackPhaseMenu));
-                break;
-            case "nonUIPlayerPlaying":
-                break;
-            case "animateAttack":
-                StartCoroutine(DoSwapOutPopInAnimation(currMenuObj, animateAttackWindow, MenuState.AnimatingAttack));
-                break;
+            return;
         }
+        if (newState == MenuState.BuyPhaseMenu)
+        {
+            _EventBus.Publish<TurnPhaseChanged>(new TurnPhaseChanged(null, TurnPhase.BuyPhase));
+        } else if (newState == MenuState.ActionPhaseMenu)
+        {
+            _EventBus.Publish<TurnPhaseChanged>(new TurnPhaseChanged(null, TurnPhase.ActionPhase));
+        }
+        else if (newState == MenuState.AttackPhaseMenu)
+        {
+            _EventBus.Publish<TurnPhaseChanged>(new TurnPhaseChanged(null, TurnPhase.AttackPhase));
+        }
+        _EventBus.Publish<MenuStateChanged>(new MenuStateChanged(newState));
     }
 
     public void DoAttackChoice(string action)
@@ -120,13 +137,13 @@ public class MenuController : MonoBehaviour
         switch (action)
         {
             case "scissor":
-                GameController.instance.PlayerPickedWeapon(WeaponType.Scissor);
+                _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(null, WeaponType.Scissor));
                 break;
             case "paper":
-                GameController.instance.PlayerPickedWeapon(WeaponType.Paper);
+                _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(null, WeaponType.Paper));
                 break;
             case "rock":
-                GameController.instance.PlayerPickedWeapon(WeaponType.Rock);
+                _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(null, WeaponType.Rock));
                 break;
         }
 
@@ -142,27 +159,73 @@ public class MenuController : MonoBehaviour
         switch (action)
         {
             case "scissor_attack":
-                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Attack);
+                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Scissor, WeaponAttribute.Attack));
                 break;
             case "scissor_defense":
-                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Defense);
+                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Scissor, WeaponAttribute.Defense));
                 break;
             case "paper_attack":
-                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Paper, WeaponAttribute.Attack);
+                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Paper, WeaponAttribute.Attack));
                 break;
             case "paper_defense":
-                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Paper, WeaponAttribute.Defense);
+                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Paper, WeaponAttribute.Defense));
                 break;
             case "rock_attack":
-                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Rock, WeaponAttribute.Attack);
+                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Rock, WeaponAttribute.Attack));
                 break;
             case "rock_defense":
-                GameController.instance.GetCurrentPlayer().UpgradeWeapon(WeaponType.Rock, WeaponAttribute.Defense);
+                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Rock, WeaponAttribute.Defense));
                 break;
         }
 
         DoMenuStateChange("attackPhaseMenu");
     }
+
+    // EVENT LISTENERS
+
+    public void _OnMenuStateChange(MenuStateChanged e)
+    {
+        if (e.state == currMenu)
+        {
+            return;
+        }
+        switch (e.state)
+        {
+            case MenuState.BuyPhaseMenu:
+                currMenu = MenuState.BuyPhaseMenu;
+                StartCoroutine(DoSwapAnimation(currMenuObj, buyPhaseMenu));
+                break;
+            case MenuState.BuyMenu:
+                currMenu = MenuState.BuyMenu;
+                StartCoroutine(DoSwapAnimation(currMenuObj, buyMenu));
+                break;
+            case MenuState.ActionPhaseMenu:
+                currMenu = MenuState.ActionPhaseMenu;
+                StartCoroutine(DoSwapAnimation(currMenuObj, actionPhaseMenu));
+                break;
+            case MenuState.UseMenu:
+                currMenu = MenuState.UseMenu;
+                StartCoroutine(DoSwapAnimation(currMenuObj, useMenu));
+                break;
+            case MenuState.UpgradeMenu:
+                currMenu = MenuState.UpgradeMenu;
+                StartCoroutine(DoSwapAnimation(currMenuObj, upgradeMenu));
+                break;
+            case MenuState.AttackPhaseMenu:
+                currMenu = MenuState.AttackPhaseMenu;
+                StartCoroutine(DoSwapAnimation(currMenuObj, attackPhaseMenu));
+                break;
+            case MenuState.NonUIPlayerPlaying:
+                currMenu = MenuState.NonUIPlayerPlaying;
+                break;
+            case MenuState.AnimatingAttack:
+                currMenu = MenuState.AnimatingAttack;
+                StartCoroutine(DoSwapOutPopInAnimation(currMenuObj, animateAttackWindow));
+                break;
+        }
+    }
+
+    //ANIMATORS
 
     void AnimateExit(GameObject obj, float time = 2f)
     {
@@ -174,20 +237,16 @@ public class MenuController : MonoBehaviour
         obj.transform.position = new Vector3(-1300, obj.transform.position.y, 0);
         LeanTween.move(obj, menuLocTable[obj.name], time).setEase(LeanTweenType.clamp);
     }
-    private void DoSwap(GameObject exitingObj, GameObject enteringObj, MenuState newState = MenuState.NaN)
+    private void DoSwap(GameObject exitingObj, GameObject enteringObj)
     {
         exitingObj.SetActive(false);
 
-        if (newState != MenuState.NaN)
-        {
-            currMenu = newState;
-        }
         currMenuObj = enteringObj;
 
         enteringObj.SetActive(true);
     }
 
-    IEnumerator DoSwapOutPopInAnimation(GameObject exitingObj, GameObject enteringObj, MenuState newState = MenuState.NaN)
+    IEnumerator DoSwapOutPopInAnimation(GameObject exitingObj, GameObject enteringObj)
     {
         if (exitingObj == enteringObj)
         {
@@ -197,10 +256,10 @@ public class MenuController : MonoBehaviour
         yield return new WaitForSeconds(swapDuration / 2);
 
         enteringObj.transform.position = menuLocTable[enteringObj.name];
-        DoSwap(exitingObj, enteringObj, newState);
+        DoSwap(exitingObj, enteringObj);
     }
 
-    IEnumerator DoSwapAnimation(GameObject exitingObj, GameObject enteringObj, MenuState newState = MenuState.NaN)
+    IEnumerator DoSwapAnimation(GameObject exitingObj, GameObject enteringObj)
     {
         if (exitingObj == enteringObj)
         {
@@ -209,7 +268,7 @@ public class MenuController : MonoBehaviour
         AnimateExit(exitingObj, swapDuration / 2);
         yield return new WaitForSeconds(swapDuration / 2);
 
-        DoSwap(exitingObj, enteringObj, newState);
+        DoSwap(exitingObj, enteringObj);
 
         AnimateEntry(enteringObj, swapDuration / 2);
     }
@@ -242,7 +301,8 @@ public class MenuController : MonoBehaviour
         BaseCard nextCard = cardIt.GetNextCard();
         while (nextCard != null)
         {
-            //TODO: Card logic
+            //DO CARDS
+            nextCard.DoPreAttackAction();
             nextCard = cardIt.GetNextCard();
         }
 
@@ -283,6 +343,6 @@ public class MenuController : MonoBehaviour
         LeanTween.move(tL.gameObject, weaponL.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
         LeanTween.move(tR.gameObject, weaponR.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
         GameController.instance.RegisterWinner(winnerData);
-        GameController.instance.GamePhaseOver();
+        _EventBus.Publish<GameStateOver>(new GameStateOver());
     }
 }

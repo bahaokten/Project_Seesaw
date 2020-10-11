@@ -6,13 +6,13 @@ using UnityEditor.UIElements;
 
 public struct CardData
 {
-    public float price;
+    public float cost;
     public int priority;
     public Dictionary<CardModificationType, float> modifications;
 
-    public CardData(float _price, int _priority = 5, Dictionary<CardModificationType, float>  _modifications = default)
+    public CardData(float _cost, int _priority = 5, Dictionary<CardModificationType, float>  _modifications = default)
     {
-        price = _price;
+        cost = _cost;
         priority = _priority;
         if (_modifications == default)
         {
@@ -39,7 +39,6 @@ public class CardController
     {
         player.cards.Remove(card);
         GameController.instance.activeCards[player.playerType].Add(card);
-        card.DoPreAttackAction();
     }
 
     public class CardIterator
@@ -74,18 +73,20 @@ public class CardController
 
 public static class CardFactory
 {
-    public static BaseCard GetCard(CardType type)
+    public static BaseCard GetCard(PlayerController owner, CardType type)
     {
         switch (type)
         {
             case CardType.SelfAttackIncreaseAdditiveCurrent1:
-                return new SelfAttackIncreaseAdditiveCurrent1(GlobalVars.cardData[CardType.SelfAttackIncreaseAdditiveCurrent1]);
+                return new SelfAttackIncreaseAdditiveCurrent1(owner, GlobalVars.cardData[CardType.SelfAttackIncreaseAdditiveCurrent1]);
+            case CardType.SelfDefenseIncreaseAdditiveCurrent1:
+                return new SelfDefenseIncreaseAdditiveCurrent1(owner, GlobalVars.cardData[CardType.SelfDefenseIncreaseAdditiveCurrent1]);
             case CardType.SelfDefenseIncreaseAdditiveScissor1:
-                return new SelfDefenseIncreaseAdditiveScissor1(GlobalVars.cardData[CardType.SelfDefenseIncreaseAdditiveScissor1]);
+                return new SelfDefenseIncreaseAdditiveScissor1(owner, GlobalVars.cardData[CardType.SelfDefenseIncreaseAdditiveScissor1]);
             case CardType.OpponentDefenseDecreaseAdditiveScissor1:
-                return new OpponentDefenseDecreaseAdditiveScissor1(GlobalVars.cardData[CardType.OpponentDefenseDecreaseAdditiveScissor1]);
+                return new OpponentDefenseDecreaseAdditiveScissor1(owner, GlobalVars.cardData[CardType.OpponentDefenseDecreaseAdditiveScissor1]);
             case CardType.OpponentDefenseDecreaseMultScissor1:
-                return new OpponentDefenseDecreaseMultScissor1(GlobalVars.cardData[CardType.OpponentDefenseDecreaseMultScissor1]);
+                return new OpponentDefenseDecreaseMultScissor1(owner, GlobalVars.cardData[CardType.OpponentDefenseDecreaseMultScissor1]);
         }
         return null;
     }
@@ -100,6 +101,8 @@ public abstract class BaseCard
     public float price;
 
     public CardType type;
+
+    public PlayerController owner;
 
     private int _lifeSpan;
     protected int lifeSpan
@@ -118,8 +121,9 @@ public abstract class BaseCard
         }
     }
 
-    public BaseCard()
+    public BaseCard(PlayerController _owner)
     {
+        owner = _owner;
         cardId = CardController.currAvailableCardId;
         type = CardType.BaseCard;
     }
@@ -162,17 +166,40 @@ public class SelfAttackIncreaseAdditiveCurrent1 : BaseCard
 {
     protected float attackIncrease;
 
-    public SelfAttackIncreaseAdditiveCurrent1(CardData data)
+    public SelfAttackIncreaseAdditiveCurrent1(PlayerController _owner, CardData data) : base(_owner)
     {
         type = CardType.SelfAttackIncreaseAdditiveCurrent1;
-        price = data.price;
+        price = data.cost;
         priority = data.priority;
         attackIncrease = data.modifications[CardModificationType.IncrementAttack];
     }
 
     public override void DoPreAttackAction()
     {
-        GameController.instance.GetPlayer(GameController.instance.currPlayer).GetCurrentWeaponController().currentAttack += 0.5f;
+        owner.GetCurrentWeaponController().currentAttack += 0.5f;
+        base.DoPreAttackAction();
+    }
+
+    public override void DoPostAttackAction()
+    {
+        base.DoPostAttackAction();
+    }
+}
+
+public class SelfDefenseIncreaseAdditiveCurrent1 : BaseCard
+{
+    protected float attackIncrease;
+
+    public SelfDefenseIncreaseAdditiveCurrent1(PlayerController _owner, CardData data) : base(_owner)
+    {
+        type = CardType.SelfDefenseIncreaseAdditiveCurrent1;
+        price = data.cost;
+        priority = data.priority;
+    }
+
+    public override void DoPreAttackAction()
+    {
+        owner.GetCurrentWeaponController().currentDefense += 1f;
         base.DoPreAttackAction();
     }
 
@@ -184,16 +211,16 @@ public class SelfAttackIncreaseAdditiveCurrent1 : BaseCard
 
 public class SelfDefenseIncreaseAdditiveScissor1 : BaseCard
 {
-    public SelfDefenseIncreaseAdditiveScissor1(CardData data)
+    public SelfDefenseIncreaseAdditiveScissor1(PlayerController _owner, CardData data) : base(_owner)
     {
         type = CardType.SelfDefenseIncreaseAdditiveScissor1;
-        price = data.price;
+        price = data.cost;
         priority = data.priority;
     }
 
     public override void DoPreAttackAction()
     {
-        GameController.instance.GetPlayer(GameController.instance.currPlayer).scissorController.currentDefense += 0.5f;
+        owner.scissorController.currentDefense += 0.5f;
         base.DoPreAttackAction();
     }
 
@@ -205,16 +232,16 @@ public class SelfDefenseIncreaseAdditiveScissor1 : BaseCard
 
 public class OpponentDefenseDecreaseAdditiveScissor1 : BaseCard
 {
-    public OpponentDefenseDecreaseAdditiveScissor1(CardData data)
+    public OpponentDefenseDecreaseAdditiveScissor1(PlayerController _owner, CardData data) : base(_owner)
     {
         type = CardType.OpponentDefenseDecreaseAdditiveScissor1;
-        price = data.price;
+        price = data.cost;
         priority = data.priority;
     }
 
     public override void DoPreAttackAction()
     {
-        GameController.instance.GetOpponentPlayer().scissorController.currentDefense -= 0.5f;
+        GameController.instance.GetOpponentPlayer(owner).scissorController.currentDefense -= 0.5f;
         base.DoPreAttackAction();
     }
 
@@ -226,16 +253,16 @@ public class OpponentDefenseDecreaseAdditiveScissor1 : BaseCard
 
 public class OpponentDefenseDecreaseMultScissor1 : BaseCard
 {
-    public OpponentDefenseDecreaseMultScissor1(CardData data)
+    public OpponentDefenseDecreaseMultScissor1(PlayerController _owner, CardData data) : base(_owner)
     {
         type = CardType.OpponentDefenseDecreaseMultScissor1;
-        price = data.price;
+        price = data.cost;
         priority = data.priority;
     }
 
     public override void DoPreAttackAction()
     {
-        WeaponController scissor = GameController.instance.GetOpponentPlayer().scissorController;
+        WeaponController scissor = GameController.instance.GetOpponentPlayer(owner).scissorController;
         scissor.currentDefense = scissor.baseDefense / 2f;
         base.DoPreAttackAction();
     }

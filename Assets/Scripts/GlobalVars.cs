@@ -58,6 +58,7 @@ public enum CardType
 {
     BaseCard,
     SelfAttackIncreaseAdditiveCurrent1,
+    SelfDefenseIncreaseAdditiveCurrent1,
     SelfDefenseIncreaseAdditiveScissor1,
     OpponentDefenseDecreaseAdditiveScissor1,
     OpponentDefenseDecreaseMultScissor1,
@@ -95,9 +96,10 @@ public class GlobalVars : MonoBehaviour
     {
         { CardType.BaseCard, new CardData(0) },
         { CardType.SelfAttackIncreaseAdditiveCurrent1, new CardData(2, _modifications : new Dictionary<CardModificationType, float>() { { CardModificationType.IncrementAttack, 0.5f } }) },
+        { CardType.SelfDefenseIncreaseAdditiveCurrent1, new CardData(1) },
         { CardType.SelfDefenseIncreaseAdditiveScissor1, new CardData(2) },
         { CardType.OpponentDefenseDecreaseAdditiveScissor1, new CardData(3) },
-        { CardType.OpponentDefenseDecreaseMultScissor1, new CardData(3, 3) }
+        { CardType.OpponentDefenseDecreaseMultScissor1, new CardData(6, 3) }
     };
 
     //SPRING CONSTANTS
@@ -105,9 +107,13 @@ public class GlobalVars : MonoBehaviour
     public static readonly string DEFENSE_PREFIX = "D: ";
     public static readonly string SCORE_PREFIX = "Score: ";
     public static readonly string COINS_PREFIX = "Coins: ";
-    public static readonly string UPGRADE_COST_SUFFIX = " Coins";
+    public static readonly string CURRENCY_SUFFIX = " Coins";
     public static readonly string ROUND_STALEMATE_DISPLAY_TEXT = "Stalemate!";
     public static readonly List<string> ROUND_WIN_DISPLAY_TEXT = new List<string> { "Player ", " Wins The Round Earning ", " Coins" };
+
+    //RUNTIME
+
+    public Dictionary<CardType, GameObject> cardUIData;
 
     void Awake()
     {
@@ -118,6 +124,14 @@ public class GlobalVars : MonoBehaviour
         else if (instance != this)
         {
             Destroy(gameObject);
+        }
+
+        cardUIData = new Dictionary<CardType, GameObject>();
+        foreach (CardType type in System.Enum.GetValues(typeof(CardType)))
+        {
+            print(type.ToString());
+            cardUIData[type] = Resources.Load<GameObject>("Cards/" + type.ToString());
+            print(cardUIData[type]);
         }
     }
 }
