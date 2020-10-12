@@ -129,9 +129,7 @@ public class GlobalVars : MonoBehaviour
         cardUIData = new Dictionary<CardType, GameObject>();
         foreach (CardType type in System.Enum.GetValues(typeof(CardType)))
         {
-            print(type.ToString());
             cardUIData[type] = Resources.Load<GameObject>("Cards/" + type.ToString());
-            print(cardUIData[type]);
         }
     }
 }

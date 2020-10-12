@@ -27,6 +27,6 @@ public class UseItemController : MonoBehaviour
     {
         _EventBus.Publish<CardUsed>(new CardUsed(GameController.instance.GetCurrentPlayer(), type));
         button.interactable = false;
-        MenuController.instance.DoMenuStateChange("attackPhaseMenu");
+        _EventBus.Publish<MenuStateChanged>(new MenuStateChanged(MenuState.AttackPhaseMenu));
     }
 }

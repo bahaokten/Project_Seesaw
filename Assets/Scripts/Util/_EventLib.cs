@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
 public static class EventHandler
@@ -14,7 +15,12 @@ public abstract class BaseEvent
 
     public override string ToString()
     {
-        return "E| Event id: " + eventId;
+        return "E| Event id: " + eventId + " " + InfoString();
+    }
+
+    protected virtual string InfoString()
+    {
+        return "";
     }
 
     public string GetTypeString()
@@ -35,6 +41,14 @@ public abstract class PlayerBaseEvent : BaseEvent
 
 //Game
 
+public class EndTurnPhase : PlayerBaseEvent
+{
+    public EndTurnPhase(PlayerController _player) : base(_player)
+    {
+
+    }
+}
+
 public class TurnPhaseChanged : PlayerBaseEvent
 {
     public TurnPhase phase;
@@ -42,6 +56,11 @@ public class TurnPhaseChanged : PlayerBaseEvent
     public TurnPhaseChanged(PlayerController _player, TurnPhase _phase) : base(_player)
     {
         phase = _phase;
+    }
+
+    protected override string InfoString()
+    {
+        return "New Phase: " + phase.ToString();
     }
 }
 
@@ -87,8 +106,6 @@ public class AttackWeaponPicked : PlayerBaseEvent
     }
 }
 
-//Internal
-
 public class GameStateOver
 {
     public GameStateOver()
@@ -97,6 +114,20 @@ public class GameStateOver
     }
 }
 
+public class CurrentPlayerChanged : BaseEvent
+{
+    public Player newCurr;
+
+    public CurrentPlayerChanged(Player _newCurr)
+    {
+        newCurr = _newCurr;
+    }
+
+    protected override string InfoString()
+    {
+        return "New Player: " + newCurr.ToString();
+    }
+}
 //UI
 
 public class MenuStateChanged : BaseEvent
@@ -106,6 +137,11 @@ public class MenuStateChanged : BaseEvent
     public MenuStateChanged(MenuState _state) 
     {
         state = _state;
+    }
+
+    protected override string InfoString()
+    {
+        return "New Menu: " + state.ToString();
     }
 }
 

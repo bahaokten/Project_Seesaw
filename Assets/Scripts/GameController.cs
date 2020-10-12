@@ -42,12 +42,14 @@ public class GameController : MonoBehaviour
 
     public Dictionary<Player, List<BaseCard>> activeCards;
 
+    public Subscription<EndTurnPhase> EndTurnPhaseSubscription;
     public Subscription<TurnPhaseChanged> TurnPhaseChangedSubscription;
     public Subscription<CardPurchased> CardPurchasedSubscription;
     public Subscription<CardUsed> CardUsedSubscription;
     public Subscription<WeaponUpgraded> WeaponUpgradedSubscription;
     public Subscription<AttackWeaponPicked> AttackWeaponPickedSubscription;
     public Subscription<GameStateOver> GameStateOverSubscription;
+    public Subscription<CurrentPlayerChanged> CurrentPlayerChangedSubscription;
 
     void Awake()
     {
@@ -60,19 +62,22 @@ public class GameController : MonoBehaviour
             Destroy(gameObject);
         }
 
+        EndTurnPhaseSubscription = _EventBus.Subscribe<EndTurnPhase>(_OnEndTurnPhase);
         TurnPhaseChangedSubscription = _EventBus.Subscribe<TurnPhaseChanged>(_OnTurnPhaseChanged);
         CardPurchasedSubscription = _EventBus.Subscribe<CardPurchased>(_OnCardPurchased);
         CardUsedSubscription = _EventBus.Subscribe<CardUsed>(_OnCardUsed);
         WeaponUpgradedSubscription = _EventBus.Subscribe<WeaponUpgraded>(_OnWeaponUpgraded);
         AttackWeaponPickedSubscription = _EventBus.Subscribe<AttackWeaponPicked>(_OnAttackWeaponPicked);
         GameStateOverSubscription = _EventBus.Subscribe<GameStateOver>(_OnGameStateOver);
+        CurrentPlayerChangedSubscription = _EventBus.Subscribe<CurrentPlayerChanged>(_OnCurrentPlayerChanged);
+
+        playerControllerL = playerL.GetComponent<PlayerController>();
+        playerControllerR = playerR.GetComponent<PlayerController>();
     }
 
     void Start()
     {
-        playerControllerL = playerL.GetComponent<PlayerController>();
-        playerControllerR = playerR.GetComponent<PlayerController>();
-        currPlayer = Player.L;
+        _EventBus.Publish<CurrentPlayerChanged>(new CurrentPlayerChanged(Player.L));
         activeCards = new Dictionary<Player, List<BaseCard>>();
         activeCards.Add(Player.L, new List<BaseCard>());
         activeCards.Add(Player.R, new List<BaseCard>());
@@ -86,6 +91,8 @@ public class GameController : MonoBehaviour
         _EventBus.Unsubscribe<CardUsed>(CardUsedSubscription);
         _EventBus.Unsubscribe<WeaponUpgraded>(WeaponUpgradedSubscription);
         _EventBus.Unsubscribe<AttackWeaponPicked>(AttackWeaponPickedSubscription);
+        _EventBus.Unsubscribe<GameStateOver>(GameStateOverSubscription);
+        _EventBus.Unsubscribe<CurrentPlayerChanged>(CurrentPlayerChangedSubscription);
     }
 
     private void OnEnable()
@@ -110,9 +117,35 @@ public class GameController : MonoBehaviour
         {
             AttackWeaponPickedSubscription = _EventBus.Subscribe<AttackWeaponPicked>(_OnAttackWeaponPicked);
         }
+        if (GameStateOverSubscription == null)
+        {
+            GameStateOverSubscription = _EventBus.Subscribe<GameStateOver>(_OnGameStateOver);
+        }
+        if (CurrentPlayerChangedSubscription == null)
+        {
+            CurrentPlayerChangedSubscription = _EventBus.Subscribe<CurrentPlayerChanged>(_OnCurrentPlayerChanged);
+        }
+
     }
 
     //======= Event Listeners =======
+
+    void _OnEndTurnPhase(EndTurnPhase e)
+    {
+        if (currTurnPhase == TurnPhase.BuyPhase)
+        {
+            _EventBus.Publish<TurnPhaseChanged>(new TurnPhaseChanged(e.player, TurnPhase.ActionPhase));
+        }
+        else if (currTurnPhase == TurnPhase.ActionPhase)
+        {
+            _EventBus.Publish<TurnPhaseChanged>(new TurnPhaseChanged(e.player, TurnPhase.AttackPhase));
+        }
+        else if (currTurnPhase == TurnPhase.AttackPhase)
+        {
+            //Chooses weapon by default which ends the turn
+            _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(e.player, WeaponType.Scissor));
+        }
+    }
 
     void _OnTurnPhaseChanged(TurnPhaseChanged e)
     {
@@ -140,6 +173,7 @@ public class GameController : MonoBehaviour
         {
             CardController.UseCard(e.player, useCard);
         }
+        _EventBus.Publish<TurnPhaseChanged>(new TurnPhaseChanged(null, TurnPhase.AttackPhase));
     }
 
     void _OnWeaponUpgraded(WeaponUpgraded e)
@@ -150,6 +184,7 @@ public class GameController : MonoBehaviour
             p = GameController.instance.GetCurrentPlayer();
         }
         p.UpgradeWeapon(e.type, e.attr);
+        _EventBus.Publish<TurnPhaseChanged>(new TurnPhaseChanged(null, TurnPhase.AttackPhase));
     }
 
     void _OnAttackWeaponPicked(AttackWeaponPicked e)
@@ -162,6 +197,10 @@ public class GameController : MonoBehaviour
         GameStateOver();
     }
 
+    void _OnCurrentPlayerChanged(CurrentPlayerChanged e)
+    {
+        currPlayer = e.newCurr;
+    }
 
     //======= Functions =======
 
@@ -196,13 +235,15 @@ public class GameController : MonoBehaviour
             }
         } else
         {
-            currPlayer = GetOpponentPlayerType();
             _EventBus.Publish<TurnPhaseChanged>(new TurnPhaseChanged(null, TurnPhase.BuyPhase));
             
+            _EventBus.Publish<CurrentPlayerChanged>(new CurrentPlayerChanged(GetOpponentPlayerType()));
+
             if (currPlayerMode == PlayerMode.UI)
             {
                 _EventBus.Publish<MenuStateChanged>(new MenuStateChanged(MenuState.BuyPhaseMenu));
-            } else //API player, does nothing if both players are API players
+            }
+            else //API player, does nothing if both players are API players
             {
                 _EventBus.Publish<MenuStateChanged>(new MenuStateChanged(MenuState.NonUIPlayerPlaying));
             }
@@ -269,7 +310,6 @@ public class GameController : MonoBehaviour
 
     public GameState GetNextState()
     {
-        print(currState);
         if (currState == GameState.LeftActive)
         {
             return GameState.RightActive;

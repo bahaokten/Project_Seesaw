@@ -539,7 +539,7 @@ PrefabInstance:
     - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
       propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: MenuController, Assembly-CSharp
+      value: UpgradeMenuButtonController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
@@ -549,7 +549,7 @@ PrefabInstance:
     - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
       propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
@@ -566,6 +566,11 @@ PrefabInstance:
       propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
+        type: 3}
+      propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3526438813940714885}
     - target: {fileID: 5807137764219765867, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
       propertyPath: m_text
@@ -709,7 +714,7 @@ PrefabInstance:
     - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
       propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: MenuController, Assembly-CSharp
+      value: UpgradeMenuButtonController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
@@ -719,7 +724,7 @@ PrefabInstance:
     - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
       propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
@@ -736,6 +741,11 @@ PrefabInstance:
       propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5807137764081064532, guid: 1e151c6f8e424b34e989fe059b530976,
+        type: 3}
+      propertyPath: clickEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 857203114158248494}
     - target: {fileID: 5807137764219765867, guid: 1e151c6f8e424b34e989fe059b530976,
         type: 3}
       propertyPath: m_text

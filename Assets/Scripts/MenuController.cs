@@ -8,6 +8,7 @@ public class MenuController : MonoBehaviour
 {
     public static MenuController instance;
 
+    public GameObject nonUIPlayerPlaying;
     public GameObject buyPhaseMenu;
     public GameObject buyMenu;
     public GameObject actionPhaseMenu;
@@ -61,6 +62,7 @@ public class MenuController : MonoBehaviour
         currMenuObj = buyPhaseMenu;
         menuLocTable = new Dictionary<string, Vector3>
         {
+            { nonUIPlayerPlaying.name, nonUIPlayerPlaying.transform.position },
             { buyPhaseMenu.name, buyPhaseMenu.transform.position },
             { buyMenu.name, buyMenu.transform.position },
             { actionPhaseMenu.name, actionPhaseMenu.transform.position },
@@ -149,38 +151,6 @@ public class MenuController : MonoBehaviour
 
     }
 
-    public void DoWeaponUpgrade(string action)
-    {
-        if (GameController.instance.currTurnPhase != TurnPhase.ActionPhase)
-        {
-            return;
-        }
-
-        switch (action)
-        {
-            case "scissor_attack":
-                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Scissor, WeaponAttribute.Attack));
-                break;
-            case "scissor_defense":
-                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Scissor, WeaponAttribute.Defense));
-                break;
-            case "paper_attack":
-                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Paper, WeaponAttribute.Attack));
-                break;
-            case "paper_defense":
-                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Paper, WeaponAttribute.Defense));
-                break;
-            case "rock_attack":
-                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Rock, WeaponAttribute.Attack));
-                break;
-            case "rock_defense":
-                _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Rock, WeaponAttribute.Defense));
-                break;
-        }
-
-        DoMenuStateChange("attackPhaseMenu");
-    }
-
     // EVENT LISTENERS
 
     public void _OnMenuStateChange(MenuStateChanged e)
@@ -189,8 +159,13 @@ public class MenuController : MonoBehaviour
         {
             return;
         }
+
         switch (e.state)
         {
+            case MenuState.NonUIPlayerPlaying:
+                currMenu = MenuState.NonUIPlayerPlaying;
+                DoSwap(currMenuObj, nonUIPlayerPlaying);
+                break;
             case MenuState.BuyPhaseMenu:
                 currMenu = MenuState.BuyPhaseMenu;
                 StartCoroutine(DoSwapAnimation(currMenuObj, buyPhaseMenu));
@@ -214,9 +189,6 @@ public class MenuController : MonoBehaviour
             case MenuState.AttackPhaseMenu:
                 currMenu = MenuState.AttackPhaseMenu;
                 StartCoroutine(DoSwapAnimation(currMenuObj, attackPhaseMenu));
-                break;
-            case MenuState.NonUIPlayerPlaying:
-                currMenu = MenuState.NonUIPlayerPlaying;
                 break;
             case MenuState.AnimatingAttack:
                 currMenu = MenuState.AnimatingAttack;

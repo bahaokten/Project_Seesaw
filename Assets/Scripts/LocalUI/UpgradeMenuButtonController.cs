@@ -24,4 +24,47 @@ public class UpgradeMenuButtonController : MonoBehaviour
             GetComponentInChildren<Button>().interactable = false;
         }
     }
+
+    public void DoWeaponUpgrade()
+    {
+        if (GameController.instance.currTurnPhase != TurnPhase.ActionPhase)
+        {
+            return;
+        }
+
+        switch (weaponType)
+        {
+            case WeaponType.Scissor:
+                if (weaponAttr == WeaponAttribute.Attack)
+                {
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Scissor, WeaponAttribute.Attack));
+                }
+                else
+                {
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Scissor, WeaponAttribute.Defense));
+                }
+                break;
+            case WeaponType.Paper:
+                if (weaponAttr == WeaponAttribute.Attack)
+                {
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Paper, WeaponAttribute.Attack));
+                }
+                else
+                {
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Paper, WeaponAttribute.Defense));
+                }
+                break;
+            case WeaponType.Rock:
+                if (weaponAttr == WeaponAttribute.Attack)
+                {
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Rock, WeaponAttribute.Attack));
+                }
+                else
+                {
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Rock, WeaponAttribute.Defense));
+                }
+                break;
+        }
+        _EventBus.Publish<MenuStateChanged>(new MenuStateChanged(MenuState.AttackPhaseMenu));
+    }
 }
