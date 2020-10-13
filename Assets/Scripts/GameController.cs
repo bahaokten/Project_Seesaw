@@ -77,10 +77,36 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
-        _EventBus.Publish<CurrentPlayerChanged>(new CurrentPlayerChanged(Player.L));
+        StartGame();
+    }
+
+    public void StartGame()
+    {
         activeCards = new Dictionary<Player, List<BaseCard>>();
         activeCards.Add(Player.L, new List<BaseCard>());
         activeCards.Add(Player.R, new List<BaseCard>());
+
+        if (GlobalVars.instance.LType != PlayerType.Human)
+        {
+            playerControllerL.playerMode = PlayerMode.API;
+            BaseAI aiL = gameObject.AddComponent(BaseAI.GetAIType(GlobalVars.instance.LType)) as BaseAI;
+            aiL.Initialize(Player.L);
+        } else
+        {
+            playerControllerL.playerMode = PlayerMode.UI;
+        }
+        if (GlobalVars.instance.RType != PlayerType.Human)
+        {
+            playerControllerR.playerMode = PlayerMode.API;
+            BaseAI aiR = gameObject.AddComponent(BaseAI.GetAIType(GlobalVars.instance.RType)) as BaseAI;
+            aiR.Initialize(Player.R);
+        }
+        else
+        {
+            playerControllerR.playerMode = PlayerMode.UI;
+        }
+
+        _EventBus.Publish<CurrentPlayerChanged>(new CurrentPlayerChanged(Player.L));
     }
 
 
@@ -218,7 +244,7 @@ public class GameController : MonoBehaviour
             playerControllerL.ResetAllCurrentWeaponStats();
             playerControllerR.ResetAllCurrentWeaponStats();
 
-            if (GlobalVars.ANIMATE_ATTACK)
+            if (GlobalVars.instance.animateAttack)
             {
                 StartCoroutine(MenuController.instance.AnimateAttack());
             } else

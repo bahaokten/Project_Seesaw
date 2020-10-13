@@ -1,14 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class BaseAI : MonoBehaviour
 {
-    protected Player player = Player.R;
+    protected Player player;
     protected PlayerController pc;
     protected float waitDurBetweenPhases = 0;
 
-    protected System.Random randObj = new System.Random();
+    protected static System.Random randObj = new System.Random();
+
+    private bool active = false;
 
     public Subscription<CurrentPlayerChanged> CurrentPlayerChangedSubscription;
 
@@ -17,13 +20,30 @@ public abstract class BaseAI : MonoBehaviour
         CurrentPlayerChangedSubscription = _EventBus.Subscribe<CurrentPlayerChanged>(_OnCurrentPlayerChanged);
     }
 
-    private void Start()
+    public static Type GetAIType(PlayerType type)
     {
-        pc = GameController.instance.GetPlayer(player);
+        switch (type)
+        {
+            case PlayerType.Simp_ScissorLover:
+                return typeof(Simp_ScissorLover);
+        }
+        //Human
+        return null;
+    }
+
+    public void Initialize(Player _player)
+    {
+        pc = GameController.instance.GetPlayer(_player);
+        player = _player;
+        active = true;
     }
 
     void _OnCurrentPlayerChanged(CurrentPlayerChanged e)
     {
+        if (!active)
+        {
+            return;
+        }
         if (e.newCurr == player)
         {
             StartCoroutine(DoTurn());

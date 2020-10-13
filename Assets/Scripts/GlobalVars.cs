@@ -21,6 +21,12 @@ public enum PlayerMode
     API
 }
 
+public enum PlayerType
+{
+    Human,
+    Simp_ScissorLover
+}
+
 public enum WeaponAttribute
 {
     Attack,
@@ -76,8 +82,6 @@ public class GlobalVars : MonoBehaviour
 {
     public static GlobalVars instance;
 
-    //CONFIG
-    public static readonly bool ANIMATE_ATTACK = true;
 
     //CONSTANTS
     public static readonly int SCORE_TO_WIN = 2;
@@ -116,6 +120,11 @@ public class GlobalVars : MonoBehaviour
 
     public Dictionary<CardType, GameObject> cardUIData;
 
+    //RUNTIME CONFIG
+    public bool animateAttack = true;
+    public PlayerType LType;
+    public PlayerType RType;
+
     void Awake()
     {
         if (instance == null)
@@ -132,5 +141,12 @@ public class GlobalVars : MonoBehaviour
         {
             cardUIData[type] = Resources.Load<GameObject>("Cards/" + type.ToString());
         }
+    }
+
+    public void InitGame(PlayerType L, PlayerType R, bool isAnimate)
+    {
+        animateAttack = isAnimate;
+        LType = L;
+        RType = R;
     }
 }

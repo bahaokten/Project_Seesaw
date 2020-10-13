@@ -252,7 +252,7 @@ public class MenuController : MonoBehaviour
     static float weaponSizeChangeTime = 0.2f;
     static float weaponFlyBounceBackTime = 0.5f;
     static float weaponPreAttack = 0.5f;
-    static float winningTextDisplayTime = 3f;
+    static float winningTextDisplayTime = 2f;
     static float winnerScale = 1.2f;
     static float loserScale = 0.8f;
 

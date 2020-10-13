@@ -14,6 +14,9 @@ public class Simp_ScissorLover : BaseAI
 
     protected override void ActionPhase()
     {
+        print(player);
+        print(pc.player);
+        print(pc.CanUpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Attack));
         //If possible, always upgrades scissor's attack
         if (pc.CanUpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Attack))
         {

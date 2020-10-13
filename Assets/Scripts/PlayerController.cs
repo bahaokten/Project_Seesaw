@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI scoreDisplay;
     public TextMeshProUGUI coinDisplay;
 
-    public Player playerType;
+    public Player player;
     public PlayerMode playerMode;
 
     //Weapon related
@@ -54,9 +54,9 @@ public class PlayerController : MonoBehaviour
 
     public void Awake()
     {
-        scissorController.parentPlayer = playerType;
-        paperController.parentPlayer = playerType;
-        rockController.parentPlayer = playerType;
+        scissorController.parentPlayer = player;
+        paperController.parentPlayer = player;
+        rockController.parentPlayer = player;
     }
 
     public void Start()

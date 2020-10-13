@@ -38,7 +38,7 @@ public class CardController
     public static void UseCard(PlayerController player, BaseCard card)
     {
         player.cards.Remove(card);
-        GameController.instance.activeCards[player.playerType].Add(card);
+        GameController.instance.activeCards[player.player].Add(card);
     }
 
     public class CardIterator
