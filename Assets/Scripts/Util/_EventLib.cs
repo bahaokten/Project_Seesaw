@@ -177,6 +177,16 @@ public class CurrentWeaponAttrChanged : BaseEvent
     }
 }
 
+public class PlayerWonRound : BaseEvent
+{
+    public Player player_t;
+
+    public PlayerWonRound(Player _player_t)
+    {
+        player_t = _player_t;
+    }
+}
+
 public class GameOver : BaseEvent
 {
     public Player winner;

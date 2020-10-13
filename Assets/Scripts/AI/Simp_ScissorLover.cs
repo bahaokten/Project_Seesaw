@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Simp_ScissorLover : BaseAI
 {
+    protected override void Initialize()
+    {
+    }
 
     protected override void BuyPhase()
     {
@@ -14,9 +17,6 @@ public class Simp_ScissorLover : BaseAI
 
     protected override void ActionPhase()
     {
-        print(player);
-        print(pc.player);
-        print(pc.CanUpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Attack));
         //If possible, always upgrades scissor's attack
         if (pc.CanUpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Attack))
         {
@@ -40,5 +40,9 @@ public class Simp_ScissorLover : BaseAI
         {
             _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(pc, WeaponType.Scissor));
         }
+    }
+
+    protected override void PostAttackPhase(bool isWinner)
+    {
     }
 }

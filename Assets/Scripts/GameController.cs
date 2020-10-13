@@ -90,7 +90,7 @@ public class GameController : MonoBehaviour
         {
             playerControllerL.playerMode = PlayerMode.API;
             BaseAI aiL = gameObject.AddComponent(BaseAI.GetAIType(GlobalVars.instance.LType)) as BaseAI;
-            aiL.Initialize(Player.L);
+            aiL.InitializeBase(Player.L);
         } else
         {
             playerControllerL.playerMode = PlayerMode.UI;
@@ -99,7 +99,7 @@ public class GameController : MonoBehaviour
         {
             playerControllerR.playerMode = PlayerMode.API;
             BaseAI aiR = gameObject.AddComponent(BaseAI.GetAIType(GlobalVars.instance.RType)) as BaseAI;
-            aiR.Initialize(Player.R);
+            aiR.InitializeBase(Player.R);
         }
         else
         {
@@ -334,6 +334,7 @@ public class GameController : MonoBehaviour
         {
             playerControllerL.score++;
             playerControllerL.coins += CalculateCoins(winnerData.Item2);
+            _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.L));
             if (playerControllerL.score >= GlobalVars.SCORE_TO_WIN)
             {
                 return Player.L;
@@ -342,6 +343,7 @@ public class GameController : MonoBehaviour
         {
             playerControllerR.score++;
             playerControllerR.coins += CalculateCoins(winnerData.Item2);
+            _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.R));
             if (playerControllerR.score >= GlobalVars.SCORE_TO_WIN)
             {
                 return Player.R;

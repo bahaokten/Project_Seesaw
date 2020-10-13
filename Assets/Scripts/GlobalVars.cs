@@ -24,7 +24,8 @@ public enum PlayerMode
 public enum PlayerType
 {
     Human,
-    Simp_ScissorLover
+    Simp_ScissorLover,
+    Mid_GreedyAttacker
 }
 
 public enum WeaponAttribute
@@ -84,7 +85,7 @@ public class GlobalVars : MonoBehaviour
 
 
     //CONSTANTS
-    public static readonly int SCORE_TO_WIN = 2;
+    public static readonly int SCORE_TO_WIN = 20;
 
     public static readonly float WINNING_ROUND_BASE_COINS = 1;
 

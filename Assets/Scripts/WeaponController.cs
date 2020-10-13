@@ -57,6 +57,8 @@ public class WeaponController : MonoBehaviour
         set
         {
             _currentAttack = value;
+            print("CHANGED");
+            print(value);
             _EventBus.Publish<CurrentWeaponAttrChanged>(new CurrentWeaponAttrChanged(parentPlayer, weaponType, WeaponAttribute.Attack, value));
         }
     }
@@ -111,6 +113,22 @@ public class WeaponController : MonoBehaviour
         else
         {
             return WeaponType.Paper;
+        }
+    }
+
+    public WeaponType GetStrongType()
+    {
+        if (weaponType == WeaponType.Scissor)
+        {
+            return WeaponType.Paper;
+        }
+        else if (weaponType == WeaponType.Paper)
+        {
+            return WeaponType.Rock;
+        }
+        else
+        {
+            return WeaponType.Scissor;
         }
     }
 

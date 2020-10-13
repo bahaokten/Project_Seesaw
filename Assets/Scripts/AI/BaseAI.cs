@@ -14,10 +14,12 @@ public abstract class BaseAI : MonoBehaviour
     private bool active = false;
 
     public Subscription<CurrentPlayerChanged> CurrentPlayerChangedSubscription;
+    public Subscription<PlayerWonRound> PlayerWonRoundSubscription;
 
     void Awake()
     {
         CurrentPlayerChangedSubscription = _EventBus.Subscribe<CurrentPlayerChanged>(_OnCurrentPlayerChanged);
+        PlayerWonRoundSubscription = _EventBus.Subscribe<PlayerWonRound>(_OnPlayerWonRound);
     }
 
     public static Type GetAIType(PlayerType type)
@@ -26,16 +28,19 @@ public abstract class BaseAI : MonoBehaviour
         {
             case PlayerType.Simp_ScissorLover:
                 return typeof(Simp_ScissorLover);
+            case PlayerType.Mid_GreedyAttacker:
+                return typeof(Mid_GreedyAttacker);
         }
         //Human
         return null;
     }
 
-    public void Initialize(Player _player)
+    public void InitializeBase(Player _player)
     {
         pc = GameController.instance.GetPlayer(_player);
         player = _player;
         active = true;
+        Initialize();
     }
 
     void _OnCurrentPlayerChanged(CurrentPlayerChanged e)
@@ -47,6 +52,18 @@ public abstract class BaseAI : MonoBehaviour
         if (e.newCurr == player)
         {
             StartCoroutine(DoTurn());
+        }
+    }
+
+    void _OnPlayerWonRound(PlayerWonRound e)
+    {
+        if (e.player_t == player)
+        {
+            PostAttackPhase(true);
+        }
+        else
+        {
+            PostAttackPhase(false);
         }
     }
 
@@ -78,6 +95,11 @@ public abstract class BaseAI : MonoBehaviour
         yield break;
     }
 
+    protected virtual void Initialize()
+    {
+        return;
+    }
+
     protected virtual void BuyPhase()
     {
         _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
@@ -91,5 +113,10 @@ public abstract class BaseAI : MonoBehaviour
     protected virtual void AttackPhase()
     {
         _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
+    }
+
+    protected virtual void PostAttackPhase(bool isWinner)
+    {
+        return;
     }
 }
