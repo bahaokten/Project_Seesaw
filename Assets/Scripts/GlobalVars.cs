@@ -80,7 +80,7 @@ public class GlobalVars : MonoBehaviour
     public static readonly bool ANIMATE_ATTACK = true;
 
     //CONSTANTS
-    public static readonly int SCORE_TO_WIN = 15;
+    public static readonly int SCORE_TO_WIN = 2;
 
     public static readonly float WINNING_ROUND_BASE_COINS = 1;
 
@@ -110,6 +110,7 @@ public class GlobalVars : MonoBehaviour
     public static readonly string CURRENCY_SUFFIX = " Coins";
     public static readonly string ROUND_STALEMATE_DISPLAY_TEXT = "Stalemate!";
     public static readonly List<string> ROUND_WIN_DISPLAY_TEXT = new List<string> { "Player ", " Wins The Round Earning ", " Coins" };
+    public static readonly List<string> GAME_WIN_DISPLAY_TEXT = new List<string> { "Player ", " Wins The Game!!!!."};
 
     //RUNTIME
 

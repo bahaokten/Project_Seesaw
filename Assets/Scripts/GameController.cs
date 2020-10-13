@@ -231,7 +231,14 @@ public class GameController : MonoBehaviour
                     nextCard.DoPreAttackAction();
                     nextCard = cardIt.GetNextCard();
                 }
-                DetermineWinner();
+                Player isGameWinner = RegisterWinner(DetermineWinner());
+                if (isGameWinner != Player.NaN)
+                {
+                    _EventBus.Publish<GameOver>(new GameOver(isGameWinner));
+                } else
+                {
+                    _EventBus.Publish<GameStateOver>(new GameStateOver());
+                }
             }
         } else
         {
@@ -295,17 +302,31 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void RegisterWinner(Tuple<Player, float> winnerData)
+    public Player RegisterWinner(Tuple<Player, float> winnerData)
     {
         if (winnerData.Item1 == Player.L)
         {
             playerControllerL.score++;
             playerControllerL.coins += CalculateCoins(winnerData.Item2);
+            if (playerControllerL.score >= GlobalVars.SCORE_TO_WIN)
+            {
+                return Player.L;
+            }
         } else if (winnerData.Item1 == Player.R)
         {
             playerControllerR.score++;
             playerControllerR.coins += CalculateCoins(winnerData.Item2);
+            if (playerControllerR.score >= GlobalVars.SCORE_TO_WIN)
+            {
+                return Player.R;
+            }
         }
+        return Player.NaN;
+    }
+
+    public void EndGame(Player winner)
+    {
+
     }
 
     public GameState GetNextState()

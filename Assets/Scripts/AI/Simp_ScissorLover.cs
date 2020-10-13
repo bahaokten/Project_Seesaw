@@ -6,20 +6,24 @@ using UnityEngine;
 public class Simp_ScissorLover : BaseAI
 {
 
-    protected override IEnumerator DoTurn()
+    protected override void BuyPhase()
     {
-        yield return 0;
-
-        //=== BUY PHASE ===
+        //Buys Nothing
         _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
+    }
 
-        //=== ACTION PHASE ===
+    protected override void ActionPhase()
+    {
+        //If possible, always upgrades scissor's attack
         if (pc.CanUpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Attack))
         {
             _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(pc, WeaponType.Scissor, WeaponAttribute.Attack));
         }
+    }
 
-        //=== ATTACK PHASE ===
+    protected override void AttackPhase()
+    {
+        //Has a 10% change of choosing rock and 10% chance of choosing paper, otherwise chooses scissor 
         int rand = randObj.Next(0, 100);
         if (rand < 10)
         {

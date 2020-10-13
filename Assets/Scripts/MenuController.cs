@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using CardIterator = CardController.CardIterator;
 
@@ -16,6 +17,8 @@ public class MenuController : MonoBehaviour
     public GameObject upgradeMenu;
     public GameObject attackPhaseMenu;
     public GameObject animateAttackWindow;
+
+    public TextMeshProUGUI winText;
 
     public Dictionary<string, Vector3> menuLocTable;
 
@@ -308,13 +311,25 @@ public class MenuController : MonoBehaviour
             LeanTween.move(tL.gameObject, new Vector3(0.5f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
             currMenuObj.GetComponent<AnimateAttackWindowController>().EnableWinnerText(Player.NaN, coins);
         }
-        // === RESET PHASE ===
-        yield return new WaitForSeconds(winningTextDisplayTime);
-        LeanTween.scale(tR.gameObject, tRScale, weaponFlyTime);
-        LeanTween.scale(tL.gameObject, tlScale, weaponFlyTime);
-        LeanTween.move(tL.gameObject, weaponL.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
-        LeanTween.move(tR.gameObject, weaponR.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
-        GameController.instance.RegisterWinner(winnerData);
-        _EventBus.Publish<GameStateOver>(new GameStateOver());
+        
+        Player isGameWinner = GameController.instance.RegisterWinner(winnerData);
+        if (isGameWinner != Player.NaN)
+        {
+            // === ENG GAME PHASE ===
+            winText.text = GlobalVars.GAME_WIN_DISPLAY_TEXT[0] + isGameWinner.ToString() + GlobalVars.GAME_WIN_DISPLAY_TEXT[1];
+            winText.enabled = true;
+            yield return new WaitForSeconds(winningTextDisplayTime);
+            _EventBus.Publish<GameOver>(new GameOver(isGameWinner));
+        }
+        else
+        {
+            // === RESET PHASE ===
+            yield return new WaitForSeconds(winningTextDisplayTime);
+            LeanTween.scale(tR.gameObject, tRScale, weaponFlyTime);
+            LeanTween.scale(tL.gameObject, tlScale, weaponFlyTime);
+            LeanTween.move(tL.gameObject, weaponL.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+            LeanTween.move(tR.gameObject, weaponR.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
+            _EventBus.Publish<GameStateOver>(new GameStateOver());
+        }
     }
 }

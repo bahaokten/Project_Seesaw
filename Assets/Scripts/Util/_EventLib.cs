@@ -176,3 +176,13 @@ public class CurrentWeaponAttrChanged : BaseEvent
         newVal = _newVal;
     }
 }
+
+public class GameOver : BaseEvent
+{
+    public Player winner;
+
+    public GameOver(Player _winner)
+    {
+        winner = _winner;
+    }
+}
