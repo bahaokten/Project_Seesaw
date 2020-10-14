@@ -25,7 +25,9 @@ public enum PlayerType
 {
     Human,
     Simp_ScissorLover,
-    Mid_GreedyAttacker
+    Mid_GreedyAttacker,
+    Mid_GreedyDefender,
+    Mid_GreedyMixed
 }
 
 public enum WeaponAttribute

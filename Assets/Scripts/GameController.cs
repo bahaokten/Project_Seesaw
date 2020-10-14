@@ -349,6 +349,10 @@ public class GameController : MonoBehaviour
                 return Player.R;
             }
         }
+        else
+        {
+            _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.NaN));
+        }
         return Player.NaN;
     }
 

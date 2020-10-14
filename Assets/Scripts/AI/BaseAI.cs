@@ -11,7 +11,7 @@ public abstract class BaseAI : MonoBehaviour
 
     protected static System.Random randObj = new System.Random();
 
-    private bool active = false;
+    public bool active = false;
 
     public Subscription<CurrentPlayerChanged> CurrentPlayerChangedSubscription;
     public Subscription<PlayerWonRound> PlayerWonRoundSubscription;
@@ -30,6 +30,10 @@ public abstract class BaseAI : MonoBehaviour
                 return typeof(Simp_ScissorLover);
             case PlayerType.Mid_GreedyAttacker:
                 return typeof(Mid_GreedyAttacker);
+            case PlayerType.Mid_GreedyDefender:
+                return typeof(Mid_GreedyDefender);
+            case PlayerType.Mid_GreedyMixed:
+                return typeof(Mid_GreedyMixed);
         }
         //Human
         return null;
@@ -49,6 +53,7 @@ public abstract class BaseAI : MonoBehaviour
         {
             return;
         }
+
         if (e.newCurr == player)
         {
             StartCoroutine(DoTurn());
@@ -57,6 +62,11 @@ public abstract class BaseAI : MonoBehaviour
 
     void _OnPlayerWonRound(PlayerWonRound e)
     {
+        if (!active)
+        {
+            return;
+        }
+
         if (e.player_t == player)
         {
             PostAttackPhase(true);
@@ -102,6 +112,7 @@ public abstract class BaseAI : MonoBehaviour
 
     protected virtual void BuyPhase()
     {
+        print("NO");
         _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
     }
 
