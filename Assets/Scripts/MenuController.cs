@@ -277,6 +277,7 @@ public class MenuController : MonoBehaviour
         while (nextCard != null)
         {
             //DO CARDS
+            print(nextCard.GetType());
             nextCard.DoPreAttackAction();
             nextCard = cardIt.GetNextCard();
         }
@@ -329,7 +330,7 @@ public class MenuController : MonoBehaviour
             LeanTween.scale(tL.gameObject, tlScale, weaponFlyTime);
             LeanTween.move(tL.gameObject, weaponL.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
             LeanTween.move(tR.gameObject, weaponR.weaponVisualInitPos, weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
-            _EventBus.Publish<GameStateOver>(new GameStateOver());
+            _EventBus.Publish<GameStateOver>(new GameStateOver(GameController.instance.currState));
         }
     }
 }

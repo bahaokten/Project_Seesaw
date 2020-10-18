@@ -46,6 +46,7 @@ public class GameController : MonoBehaviour
     public Subscription<TurnPhaseChanged> TurnPhaseChangedSubscription;
     public Subscription<CardPurchased> CardPurchasedSubscription;
     public Subscription<CardUsed> CardUsedSubscription;
+    public Subscription<CardDestroyed> CardDestroyedSubscription;
     public Subscription<WeaponUpgraded> WeaponUpgradedSubscription;
     public Subscription<AttackWeaponPicked> AttackWeaponPickedSubscription;
     public Subscription<GameStateOver> GameStateOverSubscription;
@@ -66,6 +67,7 @@ public class GameController : MonoBehaviour
         TurnPhaseChangedSubscription = _EventBus.Subscribe<TurnPhaseChanged>(_OnTurnPhaseChanged);
         CardPurchasedSubscription = _EventBus.Subscribe<CardPurchased>(_OnCardPurchased);
         CardUsedSubscription = _EventBus.Subscribe<CardUsed>(_OnCardUsed);
+        CardDestroyedSubscription = _EventBus.Subscribe<CardDestroyed>(_OnCardDestroyed);
         WeaponUpgradedSubscription = _EventBus.Subscribe<WeaponUpgraded>(_OnWeaponUpgraded);
         AttackWeaponPickedSubscription = _EventBus.Subscribe<AttackWeaponPicked>(_OnAttackWeaponPicked);
         GameStateOverSubscription = _EventBus.Subscribe<GameStateOver>(_OnGameStateOver);
@@ -202,6 +204,11 @@ public class GameController : MonoBehaviour
         _EventBus.Publish<TurnPhaseChanged>(new TurnPhaseChanged(null, TurnPhase.AttackPhase));
     }
 
+    void _OnCardDestroyed(CardDestroyed e)
+    {
+        CardController.DestroyCard(e.player, e.card);
+    }
+
     void _OnWeaponUpgraded(WeaponUpgraded e)
     {
         PlayerController p = e.player;
@@ -233,7 +240,7 @@ public class GameController : MonoBehaviour
     public void PlayerPickedWeapon(WeaponType weapon_t)
     {
         GetPlayer(currPlayer).currentWeapon = weapon_t;
-        _EventBus.Publish<GameStateOver>(new GameStateOver());
+        _EventBus.Publish<GameStateOver>(new GameStateOver(GameController.instance.currState));
     }
 
     public void GameStateOver()
@@ -243,7 +250,7 @@ public class GameController : MonoBehaviour
         {
             playerControllerL.ResetAllCurrentWeaponStats();
             playerControllerR.ResetAllCurrentWeaponStats();
-
+  
             if (GlobalVars.instance.animateAttack)
             {
                 StartCoroutine(MenuController.instance.AnimateAttack());
@@ -254,6 +261,7 @@ public class GameController : MonoBehaviour
                 while (nextCard != null)
                 {
                     //DO CARDS
+                    print(nextCard.GetType());
                     nextCard.DoPreAttackAction();
                     nextCard = cardIt.GetNextCard();
                 }
@@ -263,7 +271,7 @@ public class GameController : MonoBehaviour
                     _EventBus.Publish<GameOver>(new GameOver(isGameWinner));
                 } else
                 {
-                    _EventBus.Publish<GameStateOver>(new GameStateOver());
+                    _EventBus.Publish<GameStateOver>(new GameStateOver(GameController.instance.currState));
                 }
             }
         } else

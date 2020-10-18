@@ -21,10 +21,16 @@ public class AnimateAttackWindowController : MonoBehaviour
     private void OnDisable()
     {
         _EventBus.Unsubscribe<CurrentWeaponAttrChanged>(CurrentWeaponAttrChangedEventSubscription);
+        CurrentWeaponAttrChangedEventSubscription = null;
     }
 
     private void OnEnable()
     {
+        if (CurrentWeaponAttrChangedEventSubscription == null)
+        {
+            CurrentWeaponAttrChangedEventSubscription = _EventBus.Subscribe<CurrentWeaponAttrChanged>(_OnCurrentWeaponAttrChange);
+        }
+
         WinnerText.SetActive(false);
         PlayerController pL = GameController.instance.GetPlayer(Player.L);
         WeaponController currentLWeapon = pL.GetWeapon(pL.currentWeapon);
@@ -37,11 +43,6 @@ public class AnimateAttackWindowController : MonoBehaviour
 
         PRDisplay.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = GlobalVars.ATTACK_PREFIX + currentRWeapon.baseAttack;
         PRDisplay.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = GlobalVars.DEFENSE_PREFIX + currentRWeapon.baseDefense;
-
-        if (CurrentWeaponAttrChangedEventSubscription == null)
-        {
-            CurrentWeaponAttrChangedEventSubscription = _EventBus.Subscribe<CurrentWeaponAttrChanged>(_OnCurrentWeaponAttrChange);
-        }
     }
 
     public void EnableWinnerText(Player winner, float coinAmount)
@@ -65,7 +66,6 @@ public class AnimateAttackWindowController : MonoBehaviour
     {
         //Assumes only displayed weapon is chaning value so no need to check for weapon type
         GameObject PDisplay;
-
         if (e.player_t == Player.L)
         {
             PDisplay = PLDisplay;

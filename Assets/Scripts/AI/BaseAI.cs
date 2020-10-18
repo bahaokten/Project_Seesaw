@@ -112,7 +112,6 @@ public abstract class BaseAI : MonoBehaviour
 
     protected virtual void BuyPhase()
     {
-        print("NO");
         _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
     }
 

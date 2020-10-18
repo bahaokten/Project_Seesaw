@@ -57,6 +57,7 @@ public class WeaponController : MonoBehaviour
         set
         {
             _currentAttack = value;
+            //print(parentPlayer + " w" + weaponType + " attack changed to" + value);
             _EventBus.Publish<CurrentWeaponAttrChanged>(new CurrentWeaponAttrChanged(parentPlayer, weaponType, WeaponAttribute.Attack, value));
         }
     }
@@ -71,6 +72,7 @@ public class WeaponController : MonoBehaviour
         set
         {
             _currentDefense = value;
+            //print(parentPlayer + " w" + weaponType + " defense changed to" + value);
             _EventBus.Publish<CurrentWeaponAttrChanged>(new CurrentWeaponAttrChanged(parentPlayer, weaponType, WeaponAttribute.Defense, value));
         }
     }

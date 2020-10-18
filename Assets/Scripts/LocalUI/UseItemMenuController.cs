@@ -21,7 +21,6 @@ public class UseItemMenuController : MonoBehaviour
         int numCards = cards.Count;
 
         int i = 0;
-        print(numCards);
         do
         {
             GameObject newRow = Instantiate(EmptyRowPrefab, rowParent);
@@ -29,7 +28,6 @@ public class UseItemMenuController : MonoBehaviour
             for (int j =0; j < 4; j ++)
             {
                 int globalIndex = j + i * 4;
-                print(j);
                 if (globalIndex == numCards)
                 {
                     break;

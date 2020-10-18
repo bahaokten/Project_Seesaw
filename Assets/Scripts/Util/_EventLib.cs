@@ -83,6 +83,16 @@ public class CardUsed : PlayerBaseEvent
     }
 }
 
+public class CardDestroyed : PlayerBaseEvent
+{
+    public BaseCard card;
+
+    public CardDestroyed(PlayerController _player, BaseCard _card) : base(_player)
+    {
+        card = _card;
+    }
+}
+
 public class WeaponUpgraded : PlayerBaseEvent
 {
     public WeaponType type;
@@ -107,9 +117,11 @@ public class AttackWeaponPicked : PlayerBaseEvent
 
 public class GameStateOver
 {
-    public GameStateOver()
-    {
+    public GameState prevState;
 
+    public GameStateOver(GameState _prevState)
+    {
+        prevState = _prevState;
     }
 }
 

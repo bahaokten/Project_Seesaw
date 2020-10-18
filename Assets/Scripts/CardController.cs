@@ -41,13 +41,25 @@ public class CardController
         GameController.instance.activeCards[player.player].Add(card);
     }
 
+    public static void DestroyCard(PlayerController player, BaseCard card)
+    {
+        GameController.instance.activeCards[player.player].Remove(card);
+    }
+
     public class CardIterator
     {
-        Player player_t = Player.L;
+        Player player_t;
         int currCardIndex;
 
         public CardIterator()
         {
+            ResetIterator();
+        }
+
+        public void ResetIterator()
+        {
+            player_t = Player.L;
+            currCardIndex = 0;
         }
 
         public BaseCard GetNextCard()
@@ -113,22 +125,34 @@ public abstract class BaseCard
         }
         set
         {
-            lifeSpan = value;
-            if (lifeSpan <= 0)
+            _lifeSpan = value;
+            if (_lifeSpan <= 0)
             {
                 DestroyCard();
             }
         }
     }
 
+    public Subscription<GameStateOver> GameStateOverSubscription;
+
     public BaseCard(PlayerController _owner)
     {
         owner = _owner;
         cardId = CardController.currAvailableCardId;
         type = CardType.BaseCard;
+        lifeSpan = 1; //unused feature at the moment so set to 1
+        GameStateOverSubscription = _EventBus.Subscribe<GameStateOver>(_OnGameStateOver);
     }
 
-    public override bool Equals(Object obj)
+    public void _OnGameStateOver(GameStateOver e)
+    {
+        if (e.prevState == GameState.IssuingAttack)
+        {
+            DoPostAttackAction();
+        }
+    }
+
+    public override bool Equals(object obj)
     {
         //Check for null and compare run-time types.
         if ((obj == null) || !this.GetType().Equals(obj.GetType()))
@@ -148,17 +172,16 @@ public abstract class BaseCard
 
     virtual public void DoPreAttackAction()
     {
-
     }
 
-    virtual public void DoPostAttackAction()
+    virtual protected void DoPostAttackAction()
     {
         lifeSpan -= 1;
     }
 
-    public void DestroyCard()
+    protected void DestroyCard()
     {
-
+        _EventBus.Publish<CardDestroyed>(new CardDestroyed(owner, this));
     }
 }
 
@@ -180,7 +203,7 @@ public class SelfAttackIncreaseAdditiveCurrent1 : BaseCard
         base.DoPreAttackAction();
     }
 
-    public override void DoPostAttackAction()
+    protected override void DoPostAttackAction()
     {
         base.DoPostAttackAction();
     }
@@ -203,7 +226,7 @@ public class SelfDefenseIncreaseAdditiveCurrent1 : BaseCard
         base.DoPreAttackAction();
     }
 
-    public override void DoPostAttackAction()
+    protected override void DoPostAttackAction()
     {
         base.DoPostAttackAction();
     }
@@ -224,7 +247,7 @@ public class SelfDefenseIncreaseAdditiveScissor1 : BaseCard
         base.DoPreAttackAction();
     }
 
-    public override void DoPostAttackAction()
+    protected override void DoPostAttackAction()
     {
         base.DoPostAttackAction();
     }
@@ -245,7 +268,7 @@ public class OpponentDefenseDecreaseAdditiveScissor1 : BaseCard
         base.DoPreAttackAction();
     }
 
-    public override void DoPostAttackAction()
+    protected override void DoPostAttackAction()
     {
         base.DoPostAttackAction();
     }
@@ -267,7 +290,7 @@ public class OpponentDefenseDecreaseMultScissor1 : BaseCard
         base.DoPreAttackAction();
     }
 
-    public override void DoPostAttackAction()
+    protected override void DoPostAttackAction()
     {
         base.DoPostAttackAction();
     }
