@@ -25,7 +25,6 @@ public abstract class BaseMid_Greedy : BaseAI
     protected override void BuyPhase()
     {
         float bestUpgradePrice = 10000;
-        print(canBuyUpgrade);
         foreach (WeaponType type in Enum.GetValues(typeof(WeaponType)))
         {
             if (pc.CanUpgradeWeapon(type, attrOfInterest))

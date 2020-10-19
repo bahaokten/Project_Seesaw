@@ -63,7 +63,7 @@ public enum TurnPhase
     AttackPhase
 }
 
-public enum CardType
+public enum CardType //Order Matters for Logger.cs
 {
     BaseCard,
     SelfAttackIncreaseAdditiveCurrent1,

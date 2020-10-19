@@ -82,36 +82,6 @@ public class GameController : MonoBehaviour
         StartGame();
     }
 
-    public void StartGame()
-    {
-        activeCards = new Dictionary<Player, List<BaseCard>>();
-        activeCards.Add(Player.L, new List<BaseCard>());
-        activeCards.Add(Player.R, new List<BaseCard>());
-
-        if (GlobalVars.instance.LType != PlayerType.Human)
-        {
-            playerControllerL.playerMode = PlayerMode.API;
-            BaseAI aiL = gameObject.AddComponent(BaseAI.GetAIType(GlobalVars.instance.LType)) as BaseAI;
-            aiL.InitializeBase(Player.L);
-        } else
-        {
-            playerControllerL.playerMode = PlayerMode.UI;
-        }
-        if (GlobalVars.instance.RType != PlayerType.Human)
-        {
-            playerControllerR.playerMode = PlayerMode.API;
-            BaseAI aiR = gameObject.AddComponent(BaseAI.GetAIType(GlobalVars.instance.RType)) as BaseAI;
-            aiR.InitializeBase(Player.R);
-        }
-        else
-        {
-            playerControllerR.playerMode = PlayerMode.UI;
-        }
-
-        _EventBus.Publish<CurrentPlayerChanged>(new CurrentPlayerChanged(Player.L));
-    }
-
-
     private void OnDisable()
     {
         _EventBus.Unsubscribe<TurnPhaseChanged>(TurnPhaseChangedSubscription);
@@ -237,6 +207,36 @@ public class GameController : MonoBehaviour
 
     //======= Functions =======
 
+    public void StartGame()
+    {
+        activeCards = new Dictionary<Player, List<BaseCard>>();
+        activeCards.Add(Player.L, new List<BaseCard>());
+        activeCards.Add(Player.R, new List<BaseCard>());
+
+        if (GlobalVars.instance.LType != PlayerType.Human)
+        {
+            playerControllerL.playerMode = PlayerMode.API;
+            BaseAI aiL = gameObject.AddComponent(BaseAI.GetAIType(GlobalVars.instance.LType)) as BaseAI;
+            aiL.InitializeBase(Player.L);
+        }
+        else
+        {
+            playerControllerL.playerMode = PlayerMode.UI;
+        }
+        if (GlobalVars.instance.RType != PlayerType.Human)
+        {
+            playerControllerR.playerMode = PlayerMode.API;
+            BaseAI aiR = gameObject.AddComponent(BaseAI.GetAIType(GlobalVars.instance.RType)) as BaseAI;
+            aiR.InitializeBase(Player.R);
+        }
+        else
+        {
+            playerControllerR.playerMode = PlayerMode.UI;
+        }
+
+        _EventBus.Publish<CurrentPlayerChanged>(new CurrentPlayerChanged(Player.L));
+    }
+
     public void PlayerPickedWeapon(WeaponType weapon_t)
     {
         GetPlayer(currPlayer).currentWeapon = weapon_t;
@@ -303,55 +303,58 @@ public class GameController : MonoBehaviour
     }
 
     //<player, damage dealt>
-    public Tuple<Player, float> DetermineWinner()
+    public WinnerData DetermineWinner()
     {
         WeaponController LWeapon = playerControllerL.GetCurrentWeaponController();
         WeaponController RWeapon = playerControllerR.GetCurrentWeaponController();
 
         if (LWeapon.weaponType == RWeapon.weaponType)
         {
+            float LStats = LWeapon.currentAttack + LWeapon.currentDefense;
+            float RStats = RWeapon.currentAttack + RWeapon.currentDefense;
             if (LWeapon.currentAttack > RWeapon.currentAttack)
             {
                 //player L wins
-                return new Tuple<Player, float>(Player.L, LWeapon.currentAttack - RWeapon.currentDefense);
+                return new WinnerData(Player.L, LStats - RStats, LWeapon.weaponType, RWeapon.weaponType);
             }
             else if(LWeapon.currentAttack < RWeapon.currentAttack)
             {
                 //player R wins
-                return new Tuple<Player, float>(Player.R, RWeapon.currentAttack - LWeapon.currentDefense);
+                return new WinnerData(Player.R, RStats - LStats, LWeapon.weaponType, RWeapon.weaponType);
             }
             else
             {
                 //stalemate
-                return new Tuple<Player, float>(Player.NaN, 0f);
+                return new WinnerData(Player.NaN, 0, LWeapon.weaponType, RWeapon.weaponType);
             }
         } else if (LWeapon.GetWeakType() == RWeapon.weaponType)
         {
             //player R wins
-            return new Tuple<Player, float>(Player.R, RWeapon.currentAttack - LWeapon.currentDefense);
+            return new WinnerData(Player.R, RWeapon.currentAttack - LWeapon.currentDefense, LWeapon.weaponType, RWeapon.weaponType);
         }
         {
             //player L wins
-            return new Tuple<Player, float>(Player.L, LWeapon.currentAttack - RWeapon.currentDefense);
+            return new WinnerData(Player.L, LWeapon.currentAttack - RWeapon.currentDefense, LWeapon.weaponType, RWeapon.weaponType);
         }
     }
 
-    public Player RegisterWinner(Tuple<Player, float> winnerData)
+    public Player RegisterWinner(WinnerData winnerData)
     {
-        if (winnerData.Item1 == Player.L)
+        float coins = CalculateCoins(winnerData.winnerAttDefDiff);
+        if (winnerData.winner == Player.L)
         {
             playerControllerL.score++;
-            playerControllerL.coins += CalculateCoins(winnerData.Item2);
-            _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.L));
+            playerControllerL.coins += coins;
+            _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.L, coins, winnerData.weaponUsed[Player.L], winnerData.weaponUsed[Player.R]));
             if (playerControllerL.score >= GlobalVars.SCORE_TO_WIN)
             {
                 return Player.L;
             }
-        } else if (winnerData.Item1 == Player.R)
+        } else if (winnerData.winner == Player.R)
         {
             playerControllerR.score++;
-            playerControllerR.coins += CalculateCoins(winnerData.Item2);
-            _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.R));
+            playerControllerR.coins += coins;
+            _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.R, coins, winnerData.weaponUsed[Player.L], winnerData.weaponUsed[Player.R]));
             if (playerControllerR.score >= GlobalVars.SCORE_TO_WIN)
             {
                 return Player.R;
@@ -359,14 +362,9 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.NaN));
+            _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.NaN, 0, 0, 0));
         }
         return Player.NaN;
-    }
-
-    public void EndGame(Player winner)
-    {
-
     }
 
     public GameState GetNextState()
@@ -432,5 +430,42 @@ public class GameController : MonoBehaviour
         {
             return Player.L;
         }
+    }
+
+    public Player GetOpponentPlayerType(Player p)
+    {
+        if (p == Player.L)
+        {
+            return Player.R;
+        }
+        else
+        {
+            return Player.L;
+        }
+    }
+}
+
+public struct WinnerData
+{
+    public Player winner;
+    public float winnerAttDefDiff;
+    public Dictionary<Player, WeaponType> weaponUsed;
+
+    public WinnerData(Player _winner, float _winnerAttDefDiff, WeaponType playerLWeapon, WeaponType playerRWeapon)
+    {
+        winner = _winner;
+
+        if (_winnerAttDefDiff < 0)
+        {
+            winnerAttDefDiff = 0;
+        }
+        else
+        {
+            winnerAttDefDiff = _winnerAttDefDiff;
+        }
+
+        weaponUsed = new Dictionary<Player, WeaponType>();
+        weaponUsed[Player.L] = playerLWeapon;
+        weaponUsed[Player.R] = playerRWeapon;
     }
 }

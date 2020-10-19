@@ -8,10 +8,11 @@ public class UpgradeMenuButtonController : MonoBehaviour
 {
     public WeaponType weaponType;
     public WeaponAttribute weaponAttr;
+    PlayerController currentPlayer;
 
     private void OnEnable()
     {
-        PlayerController currentPlayer = GameController.instance.GetCurrentPlayer();
+        currentPlayer = GameController.instance.GetCurrentPlayer();
 
         transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = currentPlayer.GetWeapon(weaponType).GetUpgradePrice(weaponAttr) + GlobalVars.CURRENCY_SUFFIX;
 
@@ -31,37 +32,37 @@ public class UpgradeMenuButtonController : MonoBehaviour
         {
             return;
         }
-
+        print(currentPlayer);
         switch (weaponType)
         {
             case WeaponType.Scissor:
                 if (weaponAttr == WeaponAttribute.Attack)
                 {
-                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Scissor, WeaponAttribute.Attack));
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(currentPlayer, WeaponType.Scissor, WeaponAttribute.Attack));
                 }
                 else
                 {
-                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Scissor, WeaponAttribute.Defense));
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(currentPlayer, WeaponType.Scissor, WeaponAttribute.Defense));
                 }
                 break;
             case WeaponType.Paper:
                 if (weaponAttr == WeaponAttribute.Attack)
                 {
-                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Paper, WeaponAttribute.Attack));
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(currentPlayer, WeaponType.Paper, WeaponAttribute.Attack));
                 }
                 else
                 {
-                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Paper, WeaponAttribute.Defense));
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(currentPlayer, WeaponType.Paper, WeaponAttribute.Defense));
                 }
                 break;
             case WeaponType.Rock:
                 if (weaponAttr == WeaponAttribute.Attack)
                 {
-                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Rock, WeaponAttribute.Attack));
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(currentPlayer, WeaponType.Rock, WeaponAttribute.Attack));
                 }
                 else
                 {
-                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(null, WeaponType.Rock, WeaponAttribute.Defense));
+                    _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(currentPlayer, WeaponType.Rock, WeaponAttribute.Defense));
                 }
                 break;
         }

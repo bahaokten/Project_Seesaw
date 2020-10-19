@@ -78,7 +78,6 @@ public class MenuController : MonoBehaviour
 
     void Update()
     {
-
     }
 
     void OnDestroy()
@@ -283,13 +282,13 @@ public class MenuController : MonoBehaviour
         }
 
         // === WIN PHASE ===
-        Tuple<Player, float> winnerData = GameController.instance.DetermineWinner();
-        float coins = GameController.CalculateCoins(winnerData.Item2);
+        WinnerData winnerData = GameController.instance.DetermineWinner();
+        float coins = GameController.CalculateCoins(winnerData.winnerAttDefDiff);
         yield return new WaitForSeconds(weaponPreAttack);
 
         Vector3 tlScale = tL.localScale;
         Vector3 tRScale = tR.localScale;
-        if (winnerData.Item1 == Player.L)
+        if (winnerData.winner == Player.L)
         {
             LeanTween.move(tL.gameObject, new Vector3(0.2f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
             LeanTween.move(tR.gameObject, new Vector3(0.1f, tR.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
@@ -298,7 +297,7 @@ public class MenuController : MonoBehaviour
             LeanTween.scale(tR.gameObject, tR.localScale * loserScale, weaponSizeChangeTime);
             LeanTween.move(tR.gameObject, new Vector3(4f, tR.position.y, 0), weaponFlyBounceBackTime).setEase(LeanTweenType.easeOutExpo);
             currMenuObj.GetComponent<AnimateAttackWindowController>().EnableWinnerText(Player.L, coins);
-        } else if (winnerData.Item1 == Player.R)
+        } else if (winnerData.winner == Player.R)
         {
             LeanTween.move(tR.gameObject, new Vector3(-0.2f, tR.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
             LeanTween.move(tL.gameObject, new Vector3(0.1f, tL.position.y, 0), weaponFlyTime).setEase(LeanTweenType.easeInOutExpo);
