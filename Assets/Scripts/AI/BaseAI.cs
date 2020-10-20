@@ -22,6 +22,12 @@ public abstract class BaseAI : MonoBehaviour
         PlayerWonRoundSubscription = _EventBus.Subscribe<PlayerWonRound>(_OnPlayerWonRound);
     }
 
+    private void OnDestroy()
+    {
+        _EventBus.Unsubscribe<CurrentPlayerChanged>(CurrentPlayerChangedSubscription);
+        _EventBus.Unsubscribe<PlayerWonRound>(PlayerWonRoundSubscription);
+    }
+
     public static Type GetAIType(PlayerType type)
     {
         switch (type)

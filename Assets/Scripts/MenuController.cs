@@ -257,6 +257,8 @@ public class MenuController : MonoBehaviour
 
     public IEnumerator AnimateAttack()
     {
+        print("Animating Attack");
+        //TODO why is this failing for refresh
         MenuController.instance.DoMenuStateChange("animateAttack");
         yield return new WaitForSeconds(swapDuration/2 + 0.1f);
 

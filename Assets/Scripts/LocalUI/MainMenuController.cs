@@ -16,6 +16,11 @@ public class MainMenuController : MonoBehaviour
         ChangePlayerType(false, t);
     }
 
+    public void Start()
+    {
+        print("HI");
+    }
+
 
     public void ChangePlayerType(bool isLPlayer, string t)
     {
@@ -58,6 +63,7 @@ public class MainMenuController : MonoBehaviour
 
     public void StartGame()
     {
+        GlobalVars.instance.currGamesToPlay = GlobalVars.instance.numGamesToPlay;
         SceneManager.LoadScene("Game");
     }
 

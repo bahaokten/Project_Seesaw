@@ -4,6 +4,7 @@ using UnityEngine;
 using CardIterator = CardController.CardIterator;
 using System;
 using System.Xml;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -51,6 +52,7 @@ public class GameController : MonoBehaviour
     public Subscription<AttackWeaponPicked> AttackWeaponPickedSubscription;
     public Subscription<GameStateOver> GameStateOverSubscription;
     public Subscription<CurrentPlayerChanged> CurrentPlayerChangedSubscription;
+    public Subscription<GameOver> GameOverSubscription;
 
     void Awake()
     {
@@ -72,6 +74,7 @@ public class GameController : MonoBehaviour
         AttackWeaponPickedSubscription = _EventBus.Subscribe<AttackWeaponPicked>(_OnAttackWeaponPicked);
         GameStateOverSubscription = _EventBus.Subscribe<GameStateOver>(_OnGameStateOver);
         CurrentPlayerChangedSubscription = _EventBus.Subscribe<CurrentPlayerChanged>(_OnCurrentPlayerChanged);
+        GameOverSubscription = _EventBus.Subscribe<GameOver>(_OnGameOver);
 
         playerControllerL = playerL.GetComponent<PlayerController>();
         playerControllerR = playerR.GetComponent<PlayerController>();
@@ -91,6 +94,7 @@ public class GameController : MonoBehaviour
         _EventBus.Unsubscribe<AttackWeaponPicked>(AttackWeaponPickedSubscription);
         _EventBus.Unsubscribe<GameStateOver>(GameStateOverSubscription);
         _EventBus.Unsubscribe<CurrentPlayerChanged>(CurrentPlayerChangedSubscription);
+        _EventBus.Unsubscribe<GameOver>(GameOverSubscription);
     }
 
     private void OnEnable()
@@ -122,6 +126,10 @@ public class GameController : MonoBehaviour
         if (CurrentPlayerChangedSubscription == null)
         {
             CurrentPlayerChangedSubscription = _EventBus.Subscribe<CurrentPlayerChanged>(_OnCurrentPlayerChanged);
+        }
+        if (GameOverSubscription == null)
+        {
+            GameOverSubscription = _EventBus.Subscribe<GameOver>(_OnGameOver);
         }
 
     }
@@ -205,10 +213,29 @@ public class GameController : MonoBehaviour
         currPlayer = e.newCurr;
     }
 
+    void _OnGameOver(GameOver e)
+    {
+        GlobalVars.instance.currGamesToPlay--;
+        print(GlobalVars.instance.currGamesToPlay + " Games Left To Play");
+        if (GlobalVars.instance.currGamesToPlay != 0)
+        {
+            //Reload Game
+            SceneManager.LoadScene("Game");
+        } else
+        {
+            //Load Menu
+            print("Load Menu");
+            SceneManager.LoadScene("Menu");
+            //Logger.instance.SaveLogs(); TODO FIX THIS? ALSO WHY IS SCORE INCREASING
+        }
+    }
+
     //======= Functions =======
 
     public void StartGame()
     {
+        _EventBus.Publish<GameStarted>(new GameStarted());
+
         activeCards = new Dictionary<Player, List<BaseCard>>();
         activeCards.Add(Player.L, new List<BaseCard>());
         activeCards.Add(Player.R, new List<BaseCard>());

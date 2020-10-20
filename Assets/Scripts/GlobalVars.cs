@@ -124,9 +124,14 @@ public class GlobalVars : MonoBehaviour
     public Dictionary<CardType, GameObject> cardUIData;
 
     //RUNTIME CONFIG
+    [Header("UI Facing")]
     public bool animateAttack = true;
     public PlayerType LType;
     public PlayerType RType;
+    [Header("Internal Facing")]
+    public int numGamesToPlay = 1;
+    [HideInInspector]
+    public int currGamesToPlay;
 
     void Awake()
     {
@@ -137,6 +142,7 @@ public class GlobalVars : MonoBehaviour
         else if (instance != this)
         {
             Destroy(gameObject);
+            return;
         }
 
         cardUIData = new Dictionary<CardType, GameObject>();
@@ -144,12 +150,5 @@ public class GlobalVars : MonoBehaviour
         {
             cardUIData[type] = Resources.Load<GameObject>("Cards/" + type.ToString());
         }
-    }
-
-    public void InitGame(PlayerType L, PlayerType R, bool isAnimate)
-    {
-        animateAttack = isAnimate;
-        LType = L;
-        RType = R;
     }
 }

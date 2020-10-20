@@ -27,6 +27,7 @@ public class Logger : MonoBehaviour
     public Subscription<CurrentPlayerChanged> CurrentPlayerChangedSubscription;
     public Subscription<PlayerWonRound> PlayerWonRoundSubscription;
     public Subscription<GameOver> GameOverSubscription;
+    public Subscription<GameStarted> GameStartedSubscription;
 
     private GameData currGameData;
     private int currRow;
@@ -62,8 +63,8 @@ public class Logger : MonoBehaviour
         else if (instance != this)
         {
             Destroy(gameObject);
+            return;
         }
-
         EndTurnPhaseSubscription = _EventBus.Subscribe<EndTurnPhase>(_OnEndTurnPhase);
         TurnPhaseChangedSubscription = _EventBus.Subscribe<TurnPhaseChanged>(_OnTurnPhaseChanged);
         CardPurchasedSubscription = _EventBus.Subscribe<CardPurchased>(_OnCardPurchased);
@@ -75,20 +76,19 @@ public class Logger : MonoBehaviour
         CurrentPlayerChangedSubscription = _EventBus.Subscribe<CurrentPlayerChanged>(_OnCurrentPlayerChanged);
         PlayerWonRoundSubscription = _EventBus.Subscribe<PlayerWonRound>(_OnPlayerWonRound);
         GameOverSubscription = _EventBus.Subscribe<GameOver>(_OnGameOver);
+        GameStartedSubscription = _EventBus.Subscribe<GameStarted>(_OnGameStarted);
     }
 
     void Start()
     {
         currRow = 1;
 
-        logTxtPath = Application.persistentDataPath + "/log_" + DateTime.Today.ToString("MM-dd-yyyy_h-mm-ss") + ".txt";
-        logResultsCsvPath = Application.persistentDataPath + "/log_" + DateTime.Today.ToString("MM-dd-yyyy_h-mm-ss") + ".csv";
+        logTxtPath = Application.persistentDataPath + "/log_" + DateTime.UtcNow.ToString("MM-dd-yyyy_h-mm-ss") + ".txt";
+        logResultsCsvPath = Application.persistentDataPath + "/log_" + DateTime.UtcNow.ToString("MM-dd-yyyy_h-mm-ss") + ".csv";
         sheet = new ES3Spreadsheet();
 
-        StartNewGame();
-
         numStaticCols = 9 + 4 + 24 + 12;
-        numCardCols = 2 * currGameData.cardsUsed[Player.L].Count;
+        numCardCols = 2 * GameData.defaultCardDict.Count;
         totalCols = numStaticCols + numCardCols;
 
         SaveSheetTitle();
@@ -113,23 +113,27 @@ public class Logger : MonoBehaviour
             sheet.SetCell(i, 0, colNames[i]);
         }
         int j = -1;
-        foreach (KeyValuePair<CardType, int> kv in currGameData.cardsUsed[Player.L])
+        foreach (KeyValuePair<CardType, int> kv in GameData.defaultCardDict)
         {
             j++;
             sheet.SetCell(numStaticCols + j, 0, ( "L" + (CardType) kv.Key ).ToString());
         }
-        foreach (KeyValuePair<CardType, int> kv in currGameData.cardsUsed[Player.R])
+        foreach (KeyValuePair<CardType, int> kv in GameData.defaultCardDict)
         {
             j++;
             sheet.SetCell(numStaticCols + j, 0, ("R" + (CardType)kv.Key).ToString());
         }
     }
 
-    void SaveLogs()
+    public void SaveLogs()
     {
         print("SAVING");
         ES3.SaveRaw(rawStrOut, logTxtPath);
+        sheet.Save(logResultsCsvPath);
+    }
 
+    void SetCurrentGameCells()
+    {
         // COLS: 0:playerLType | 1:playerRType | 2:winner | 3:numRounds | 4:LWins | 5:RWins | 6:Stalemates | 7:LLongestWinStreak | 8:RLongestWinStreak | (9)
         // 9:LTotalCards | 10:RTotalCards | 11:LTotalUpgrades | 12:RTotalUpgrades | (4)
         // 13:LWeaponUsage-LWeaponWin ... | 19:RWeaponUsage-RWeaponWin ... | 25:LWeaponUsage%-LWeaponWin% ... | 31:RWeaponUsage%-LWeaponWin% ... | (24)
@@ -188,27 +192,33 @@ public class Logger : MonoBehaviour
         //LWeaponUsage%_Scissor
         sheet.SetCell(25, currRow, currGameData.playerWeaponUsage[Player.L][WeaponType.Scissor] / totalRounds);
         //LWeaponWins%_Scissor
-        sheet.SetCell(26, currRow, currGameData.playerWeaponWins[Player.L][WeaponType.Scissor] / currGameData.playerWeaponUsage[Player.L][WeaponType.Scissor]);
+        sheet.SetCell(26, currRow, (currGameData.playerWeaponUsage[Player.L][WeaponType.Scissor] == 0) ? 0 :
+            currGameData.playerWeaponWins[Player.L][WeaponType.Scissor] / currGameData.playerWeaponUsage[Player.L][WeaponType.Scissor]);
         //LWeaponUsage%_Paper
         sheet.SetCell(27, currRow, currGameData.playerWeaponUsage[Player.L][WeaponType.Paper] / totalRounds);
         //LWeaponWins%_Paper
-        sheet.SetCell(28, currRow, currGameData.playerWeaponWins[Player.L][WeaponType.Paper] / currGameData.playerWeaponUsage[Player.L][WeaponType.Paper]);
+        sheet.SetCell(28, currRow, (currGameData.playerWeaponUsage[Player.L][WeaponType.Paper] == 0) ? 0 :
+            currGameData.playerWeaponWins[Player.L][WeaponType.Paper] / currGameData.playerWeaponUsage[Player.L][WeaponType.Paper]);
         //LWeaponUsage%_Rock
         sheet.SetCell(29, currRow, currGameData.playerWeaponUsage[Player.L][WeaponType.Rock] / totalRounds);
         //LWeaponWins%_Rock
-        sheet.SetCell(30, currRow, currGameData.playerWeaponWins[Player.L][WeaponType.Rock] / currGameData.playerWeaponUsage[Player.L][WeaponType.Rock]);
+        sheet.SetCell(30, currRow, (currGameData.playerWeaponUsage[Player.L][WeaponType.Rock] == 0) ? 0 :
+            currGameData.playerWeaponWins[Player.L][WeaponType.Rock] / currGameData.playerWeaponUsage[Player.L][WeaponType.Rock]);
         //RWeaponUsage%_Scissor
         sheet.SetCell(31, currRow, currGameData.playerWeaponUsage[Player.R][WeaponType.Scissor] / totalRounds);
         //RWeaponWins%_Scissor
-        sheet.SetCell(32, currRow, currGameData.playerWeaponWins[Player.R][WeaponType.Scissor] / currGameData.playerWeaponUsage[Player.R][WeaponType.Scissor]);
+        sheet.SetCell(32, currRow, (currGameData.playerWeaponUsage[Player.R][WeaponType.Scissor] == 0) ? 0 :
+            currGameData.playerWeaponWins[Player.R][WeaponType.Scissor] / currGameData.playerWeaponUsage[Player.R][WeaponType.Scissor]);
         //RWeaponUsage%_Paper
         sheet.SetCell(33, currRow, currGameData.playerWeaponUsage[Player.R][WeaponType.Paper] / totalRounds);
         //RWeaponWins%_Paper
-        sheet.SetCell(34, currRow, currGameData.playerWeaponWins[Player.R][WeaponType.Paper] / currGameData.playerWeaponUsage[Player.R][WeaponType.Paper]);
+        sheet.SetCell(34, currRow, (currGameData.playerWeaponUsage[Player.R][WeaponType.Paper] == 0) ? 0 :
+            currGameData.playerWeaponWins[Player.R][WeaponType.Paper] / currGameData.playerWeaponUsage[Player.R][WeaponType.Paper]);
         //RWeaponUsage%_Rock
         sheet.SetCell(35, currRow, currGameData.playerWeaponUsage[Player.R][WeaponType.Rock] / totalRounds);
         //RWeaponWins%_Rock
-        sheet.SetCell(36, currRow, currGameData.playerWeaponWins[Player.R][WeaponType.Rock] / currGameData.playerWeaponUsage[Player.R][WeaponType.Rock]);
+        sheet.SetCell(36, currRow, (currGameData.playerWeaponUsage[Player.R][WeaponType.Rock] == 0) ? 0 :
+            currGameData.playerWeaponWins[Player.R][WeaponType.Rock] / currGameData.playerWeaponUsage[Player.R][WeaponType.Rock]);
         //LUpgrades_Scissor_Att
         sheet.SetCell(37, currRow, currGameData.playerWeaponAttributeUpgrades[Player.L][WeaponType.Scissor][WeaponAttribute.Attack]);
         //LUpgrades_Scissor_Def
@@ -244,10 +254,6 @@ public class Logger : MonoBehaviour
             j++;
             sheet.SetCell(numStaticCols + j, currRow, currGameData.cardsUsed[Player.R][(CardType)kv.Key]);
         }
-        //
-        //sheet.SetCell(, 1, );
-
-        sheet.Save(logResultsCsvPath);
     }
 
     private void LogLine(Player p, string line)
@@ -359,8 +365,13 @@ public class Logger : MonoBehaviour
         currGameData.winner = e.winner;
         currGameData.gameLength = Time.time - currGameData.initTime;
 
-        SaveLogs();
+        SetCurrentGameCells();
         currRow++;
+    }
+
+    void _OnGameStarted(GameStarted e)
+    {
+        StartNewGame();
     }
 
     // ============== All Recorded SpreadSheet Data ================
@@ -379,6 +390,12 @@ public class Logger : MonoBehaviour
         public Dictionary<Player, Dictionary<WeaponType, int>> playerWeaponWins;
         public Dictionary<Player, int> longestWinStreak;
         public Dictionary<Player, int> currentWinStreak;
+
+        public static readonly SortedDictionary<CardType, int> defaultCardDict = new SortedDictionary<CardType, int>()
+                    {
+                        {CardType.SelfAttackIncreaseAdditiveCurrent1, 0},
+                        {CardType.SelfDefenseIncreaseAdditiveCurrent1, 0}
+                    };
 
         public int GetTotalCardsUsed(Player p)
         {
@@ -418,17 +435,9 @@ public class Logger : MonoBehaviour
 
             cardsUsed = new Dictionary<Player, SortedDictionary<CardType, int>>()
             {
-                { Player.L, new SortedDictionary<CardType, int>()
-                    {
-                        {CardType.SelfAttackIncreaseAdditiveCurrent1, 0},
-                        {CardType.SelfDefenseIncreaseAdditiveCurrent1, 0}
-                    }
+                { Player.L, new SortedDictionary<CardType, int>(defaultCardDict)
                 },
-                { Player.R, new SortedDictionary<CardType, int>()
-                    {
-                        {CardType.SelfAttackIncreaseAdditiveCurrent1, 0},
-                        {CardType.SelfDefenseIncreaseAdditiveCurrent1, 0}
-                    }
+                { Player.R, new SortedDictionary<CardType, int>(defaultCardDict)
                 }
             };
 

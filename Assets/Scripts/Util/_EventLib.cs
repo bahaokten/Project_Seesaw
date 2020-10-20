@@ -204,6 +204,13 @@ public class PlayerWonRound : BaseEvent
     }
 }
 
+public class GameStarted : BaseEvent
+{
+    public GameStarted()
+    {
+    }
+}
+
 public class GameOver : BaseEvent
 {
     public Player winner;
