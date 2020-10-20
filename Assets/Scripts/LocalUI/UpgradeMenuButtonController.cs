@@ -32,7 +32,6 @@ public class UpgradeMenuButtonController : MonoBehaviour
         {
             return;
         }
-        print(currentPlayer);
         switch (weaponType)
         {
             case WeaponType.Scissor:

@@ -190,14 +190,14 @@ public class CurrentWeaponAttrChanged : BaseEvent
 
 public class PlayerWonRound : BaseEvent
 {
-    public Player player_t;
+    public Player winner_t;
     public float coinsEarned;
     public WeaponType playerLWeapon;
     public WeaponType playerRWeapon;
 
-    public PlayerWonRound(Player _player_t, float _coinsEarned, WeaponType _playerLWeapon, WeaponType _playerRWeapon)
+    public PlayerWonRound(Player _winner_t, float _coinsEarned, WeaponType _playerLWeapon, WeaponType _playerRWeapon)
     {
-        player_t = _player_t;
+        winner_t = _winner_t;
         coinsEarned = _coinsEarned;
         playerLWeapon = _playerLWeapon;
         playerRWeapon = _playerRWeapon;

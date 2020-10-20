@@ -141,13 +141,13 @@ public class MenuController : MonoBehaviour
         switch (action)
         {
             case "scissor":
-                _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(null, WeaponType.Scissor));
+                _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(GameController.instance.GetCurrentPlayer(), WeaponType.Scissor));
                 break;
             case "paper":
-                _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(null, WeaponType.Paper));
+                _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(GameController.instance.GetCurrentPlayer(), WeaponType.Paper));
                 break;
             case "rock":
-                _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(null, WeaponType.Rock));
+                _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(GameController.instance.GetCurrentPlayer(), WeaponType.Rock));
                 break;
         }
 
@@ -276,7 +276,6 @@ public class MenuController : MonoBehaviour
         while (nextCard != null)
         {
             //DO CARDS
-            print(nextCard.GetType());
             nextCard.DoPreAttackAction();
             nextCard = cardIt.GetNextCard();
         }

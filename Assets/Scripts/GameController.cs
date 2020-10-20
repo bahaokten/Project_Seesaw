@@ -312,12 +312,12 @@ public class GameController : MonoBehaviour
         {
             float LStats = LWeapon.currentAttack + LWeapon.currentDefense;
             float RStats = RWeapon.currentAttack + RWeapon.currentDefense;
-            if (LWeapon.currentAttack > RWeapon.currentAttack)
+            if (LStats > RStats)
             {
                 //player L wins
                 return new WinnerData(Player.L, LStats - RStats, LWeapon.weaponType, RWeapon.weaponType);
             }
-            else if(LWeapon.currentAttack < RWeapon.currentAttack)
+            else if(RStats < LStats)
             {
                 //player R wins
                 return new WinnerData(Player.R, RStats - LStats, LWeapon.weaponType, RWeapon.weaponType);

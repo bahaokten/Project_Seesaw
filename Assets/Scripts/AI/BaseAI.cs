@@ -67,7 +67,7 @@ public abstract class BaseAI : MonoBehaviour
             return;
         }
 
-        if (e.player_t == player)
+        if (e.winner_t == player)
         {
             PostAttackPhase(true);
         }
