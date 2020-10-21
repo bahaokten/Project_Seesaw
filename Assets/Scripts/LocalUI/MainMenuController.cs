@@ -18,7 +18,6 @@ public class MainMenuController : MonoBehaviour
 
     public void Start()
     {
-        print("HI");
     }
 
 

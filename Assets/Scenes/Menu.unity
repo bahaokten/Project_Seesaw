@@ -2361,7 +2361,7 @@ MonoBehaviour:
   animateAttack: 1
   LType: 0
   RType: 0
-  numGamesToPlay: 15
+  numGamesToPlay: 300
   currGamesToPlay: 0
 --- !u!1001 &1659059170
 PrefabInstance:

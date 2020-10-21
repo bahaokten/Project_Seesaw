@@ -62,7 +62,8 @@ public class GameController : MonoBehaviour
         }
         else if (instance != this)
         {
-            Destroy(gameObject);
+            Destroy(instance);
+            instance = this;
         }
 
         EndTurnPhaseSubscription = _EventBus.Subscribe<EndTurnPhase>(_OnEndTurnPhase);
@@ -87,9 +88,11 @@ public class GameController : MonoBehaviour
 
     private void OnDisable()
     {
+        _EventBus.Unsubscribe<EndTurnPhase>(EndTurnPhaseSubscription);
         _EventBus.Unsubscribe<TurnPhaseChanged>(TurnPhaseChangedSubscription);
         _EventBus.Unsubscribe<CardPurchased>(CardPurchasedSubscription);
         _EventBus.Unsubscribe<CardUsed>(CardUsedSubscription);
+        _EventBus.Unsubscribe<CardDestroyed>(CardDestroyedSubscription);
         _EventBus.Unsubscribe<WeaponUpgraded>(WeaponUpgradedSubscription);
         _EventBus.Unsubscribe<AttackWeaponPicked>(AttackWeaponPickedSubscription);
         _EventBus.Unsubscribe<GameStateOver>(GameStateOverSubscription);
@@ -217,17 +220,23 @@ public class GameController : MonoBehaviour
     {
         GlobalVars.instance.currGamesToPlay--;
         print(GlobalVars.instance.currGamesToPlay + " Games Left To Play");
-        if (GlobalVars.instance.currGamesToPlay != 0)
+        if (GlobalVars.instance.currGamesToPlay > 0)
         {
             //Reload Game
             SceneManager.LoadScene("Game");
         } else
         {
             //Load Menu
-            print("Load Menu");
-            SceneManager.LoadScene("Menu");
-            //Logger.instance.SaveLogs(); TODO FIX THIS? ALSO WHY IS SCORE INCREASING
+            Logger.instance.SaveLogs();
+            SceneManager.LoadScene(0);
         }
+    }
+
+    public IEnumerator LoadMenu() 
+    {
+        
+        yield return 0;
+        
     }
 
     //======= Functions =======
