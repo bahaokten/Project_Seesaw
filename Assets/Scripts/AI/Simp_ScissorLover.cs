@@ -42,7 +42,7 @@ public class Simp_ScissorLover : BaseAI
         }
     }
 
-    protected override void PostAttackPhase(bool isWinner)
+    protected override void PostAttackPhase(bool isWinner, WeaponType opponentWeapon)
     {
     }
 }

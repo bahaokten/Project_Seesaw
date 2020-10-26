@@ -75,11 +75,24 @@ public abstract class BaseAI : MonoBehaviour
 
         if (e.winner_t == player)
         {
-            PostAttackPhase(true);
+            if (player == Player.L)
+            {
+                PostAttackPhase(true, e.playerRWeapon);
+            } else
+            {
+                PostAttackPhase(true, e.playerLWeapon);
+            }
         }
         else
         {
-            PostAttackPhase(false);
+            if (player == Player.L)
+            {
+                PostAttackPhase(false, e.playerRWeapon);
+            }
+            else
+            {
+                PostAttackPhase(false, e.playerLWeapon);
+            }
         }
     }
 
@@ -111,6 +124,8 @@ public abstract class BaseAI : MonoBehaviour
         yield break;
     }
 
+    // === VIRTUAL FUNCTIONS ===
+
     protected virtual void Initialize()
     {
         return;
@@ -131,8 +146,43 @@ public abstract class BaseAI : MonoBehaviour
         _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
     }
 
-    protected virtual void PostAttackPhase(bool isWinner)
+    protected virtual void PostAttackPhase(bool isWinner, WeaponType opponentWeapon)
     {
         return;
+    }
+
+    // === STATIC HELPERS ===
+
+    protected static List<(WeaponType, WeaponAttribute, float)> GetAvailableUpgrades(BaseAI instance)
+    {
+        List<(WeaponType, WeaponAttribute, float)> ret = new List<(WeaponType, WeaponAttribute, float)>();
+        
+        foreach (WeaponType type in Enum.GetValues(typeof(WeaponType)))
+        {
+            if (instance.pc.CanUpgradeWeapon(type, WeaponAttribute.Attack)) 
+            {
+                ret.Add((type, WeaponAttribute.Attack, instance.pc.GetWeapon(type).GetUpgradePrice(WeaponAttribute.Attack)));
+            }
+            if (instance.pc.CanUpgradeWeapon(type, WeaponAttribute.Defense))
+            {
+                ret.Add((type, WeaponAttribute.Attack, instance.pc.GetWeapon(type).GetUpgradePrice(WeaponAttribute.Defense)));
+            }
+        }
+        return ret;
+    }
+
+    protected static List<(CardType, CardData)> GetAvailableCards(BaseAI instance)
+    {
+        List<(CardType, CardData)> ret = new List<(CardType, CardData)>();
+        
+        foreach (KeyValuePair<CardType, CardData> kv in GlobalVars.cardData)
+        {
+            if (kv.Value.cost <= instance.pc.coins)
+            {
+                ret.Add((kv.Key, kv.Value));
+            }
+        }
+
+        return ret;
     }
 }

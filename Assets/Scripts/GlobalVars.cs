@@ -102,12 +102,11 @@ public class GlobalVars : MonoBehaviour
 
     public static readonly Dictionary<CardType, CardData> cardData = new Dictionary<CardType, CardData>()
     {
-        { CardType.BaseCard, new CardData(0) },
         { CardType.SelfAttackIncreaseAdditiveCurrent1, new CardData(2, _modifications : new Dictionary<CardModificationType, float>() { { CardModificationType.IncrementAttack, 0.5f } }) },
-        { CardType.SelfDefenseIncreaseAdditiveCurrent1, new CardData(1) },
-        { CardType.SelfDefenseIncreaseAdditiveScissor1, new CardData(2) },
-        { CardType.OpponentDefenseDecreaseAdditiveScissor1, new CardData(3) },
-        { CardType.OpponentDefenseDecreaseMultScissor1, new CardData(6, 3) }
+        { CardType.SelfDefenseIncreaseAdditiveCurrent1, new CardData(1) }
+        //{ CardType.SelfDefenseIncreaseAdditiveScissor1, new CardData(2) },
+        //{ CardType.OpponentDefenseDecreaseAdditiveScissor1, new CardData(3) },
+        //{ CardType.OpponentDefenseDecreaseMultScissor1, new CardData(6, 3) }
     };
 
     //SPRING CONSTANTS
@@ -153,7 +152,7 @@ public class GlobalVars : MonoBehaviour
         }
 
         //Create Persistent Dirs
-        string MLTMP = Application.persistentDataPath + "\\MLTMP";
+        FileManager.CreateDir("\\MLTMP");
         
     }
 }

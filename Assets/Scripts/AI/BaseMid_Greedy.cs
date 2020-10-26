@@ -83,7 +83,7 @@ public abstract class BaseMid_Greedy : BaseAI
         _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(pc, attackType));
     }
 
-    protected override void PostAttackPhase(bool isWinner)
+    protected override void PostAttackPhase(bool isWinner, WeaponType opponentWeapon)
     {
         canBuyUpgrade = false;
         cardUsed = false;

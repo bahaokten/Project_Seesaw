@@ -1,48 +1,59 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Simp_Tracker : BaseAI
 {
+    Queue<WeaponType> opponentPicks;
+    int trackSize = 10;
+
+    protected Dictionary<WeaponType, float> GetOpponentWeaponRatios()
+    {
+        Dictionary<WeaponType, float> ret = new Dictionary<WeaponType, float>() 
+        {
+            {WeaponType.Scissor, 0 },
+            {WeaponType.Paper, 0 },
+            {WeaponType.Rock, 0 }
+        };
+
+        foreach (WeaponType t in opponentPicks)
+        {
+            ret[t] += 1;
+        }
+
+        ret[WeaponType.Scissor] /= opponentPicks.Count;
+        ret[WeaponType.Paper] /= opponentPicks.Count;
+        ret[WeaponType.Rock] /= opponentPicks.Count;
+
+        return ret;
+    }
+
     protected override void Initialize()
     {
+        opponentPicks = new Queue<WeaponType>();
     }
 
     protected override void BuyPhase()
     {
-        //Buys Nothing
-        _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
     }
 
     protected override void ActionPhase()
     {
-        //If possible, always upgrades scissor's attack
-        if (pc.CanUpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Attack))
-        {
-            _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(pc, WeaponType.Scissor, WeaponAttribute.Attack));
-        }
     }
 
     protected override void AttackPhase()
     {
-        //Has a 10% change of choosing rock and 10% chance of choosing paper, otherwise chooses scissor 
-        int rand = randObj.Next(0, 100);
-        if (rand < 10)
-        {
-            _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(pc, WeaponType.Paper));
-        }
-        else if (10 <= rand && rand < 20)
-        {
-            _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(pc, WeaponType.Rock));
-        }
-        else
-        {
-            _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(pc, WeaponType.Scissor));
-        }
     }
 
-    protected override void PostAttackPhase(bool isWinner)
+    protected override void PostAttackPhase(bool isWinner, WeaponType opponentWeapon)
     {
+        if (opponentPicks.Count == trackSize)
+        {
+            opponentPicks.Dequeue();
+        }
+
+        opponentPicks.Enqueue(opponentWeapon);
     }
 }
