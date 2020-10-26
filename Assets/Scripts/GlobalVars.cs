@@ -85,6 +85,7 @@ public class GlobalVars : MonoBehaviour
 {
     public static GlobalVars instance;
 
+    public static readonly string PYTHON_LOC = "python.exe";
 
     //CONSTANTS
     public static readonly int SCORE_TO_WIN = 2;
@@ -150,5 +151,9 @@ public class GlobalVars : MonoBehaviour
         {
             cardUIData[type] = Resources.Load<GameObject>("Cards/" + type.ToString());
         }
+
+        //Create Persistent Dirs
+        string MLTMP = Application.persistentDataPath + "\\MLTMP";
+        
     }
 }
