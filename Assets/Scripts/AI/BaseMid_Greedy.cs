@@ -41,6 +41,9 @@ public abstract class BaseMid_Greedy : BaseAI
         if (!canBuyUpgrade && pc.coins > 4)
         {
             _EventBus.Publish<CardPurchased>(new CardPurchased(pc, cardOfInterest));
+        } else
+        {
+            _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
         }
     }
 
@@ -56,6 +59,9 @@ public abstract class BaseMid_Greedy : BaseAI
             {
                 _EventBus.Publish<CardUsed>(new CardUsed(pc, cardOfInterest));
                 cardUsed = true;
+            } else
+            {
+                _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
             }
         }
     }

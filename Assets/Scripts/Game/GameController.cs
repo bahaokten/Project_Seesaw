@@ -5,6 +5,7 @@ using CardIterator = CardController.CardIterator;
 using System;
 using System.Xml;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class GameController : MonoBehaviour
 {
@@ -42,6 +43,7 @@ public class GameController : MonoBehaviour
     public PlayerController playerControllerR;
 
     public Dictionary<Player, List<BaseCard>> activeCards;
+    public Dictionary<Player, List<BaseCard>> currentRoundCards;
 
     public Subscription<EndTurnPhase> EndTurnPhaseSubscription;
     public Subscription<TurnPhaseChanged> TurnPhaseChangedSubscription;
@@ -245,9 +247,17 @@ public class GameController : MonoBehaviour
     {
         _EventBus.Publish<GameStarted>(new GameStarted());
 
-        activeCards = new Dictionary<Player, List<BaseCard>>();
-        activeCards.Add(Player.L, new List<BaseCard>());
-        activeCards.Add(Player.R, new List<BaseCard>());
+        activeCards = new Dictionary<Player, List<BaseCard>>() 
+        { 
+            { Player.L, new List<BaseCard>() },
+            {Player.R, new List<BaseCard>() }
+        };
+
+        currentRoundCards = new Dictionary<Player, List<BaseCard>>()
+        {
+            { Player.L, new List<BaseCard>() },
+            { Player.R, new List<BaseCard>() }
+        };
 
         if (GlobalVars.instance.LType != PlayerType.Human)
         {
@@ -286,7 +296,19 @@ public class GameController : MonoBehaviour
         {
             playerControllerL.ResetAllCurrentWeaponStats();
             playerControllerR.ResetAllCurrentWeaponStats();
-  
+
+            //Issue this round's cards
+            foreach (KeyValuePair<Player, List<BaseCard>> kv in currentRoundCards)
+            {
+                foreach (BaseCard c in kv.Value.ToList<BaseCard>())
+                {
+                    activeCards[kv.Key].Add(c);
+                }
+            }
+            currentRoundCards[Player.L].Clear();
+            currentRoundCards[Player.R].Clear();
+
+            //Issue Attack
             if (GlobalVars.instance.animateAttack)
             {
                 StartCoroutine(MenuController.instance.AnimateAttack());
@@ -477,6 +499,73 @@ public class GameController : MonoBehaviour
         else
         {
             return Player.L;
+        }
+    }
+
+    //Used by AI, remembers previous rounds cards
+    public WinnerData SimulateRound(WeaponType playerLWeaponT, WeaponType playerRWeaponT, List<CardData> playerLCards = null, List<CardData> playerRCards = null)
+    {
+        WeaponController LWeapon = playerControllerL.GetWeapon(playerLWeaponT);
+        WeaponController RWeapon = playerControllerR.GetWeapon(playerRWeaponT);
+
+        Dictionary<Player, List<float>> attackVals = new Dictionary<Player, List<float>>()
+        {
+            {Player.L, new List<float>(){LWeapon.baseAttack, LWeapon.baseDefense} },
+            {Player.R, new List<float>(){RWeapon.baseAttack, RWeapon.baseDefense} }
+        };
+
+        foreach (KeyValuePair<Player, List<BaseCard>> kv in activeCards)
+        {
+            foreach (BaseCard c in kv.Value.ToList<BaseCard>())
+            {
+                (float, float) modifier = CardController.SimulateCardEffect(c.data);
+                attackVals[kv.Key][0] += modifier.Item1; //Attack increase
+                attackVals[kv.Key][1] += modifier.Item2; //Defense increase
+            }
+        }
+
+        foreach (CardData cd in playerLCards)
+        {
+            (float, float) modifier = CardController.SimulateCardEffect(cd);
+            attackVals[Player.L][0] += modifier.Item1; //Attack increase
+            attackVals[Player.L][1] += modifier.Item2; //Defense increase
+        }
+
+        foreach (CardData cd in playerRCards)
+        {
+            (float, float) modifier = CardController.SimulateCardEffect(cd);
+            attackVals[Player.R][0] += modifier.Item1; //Attack increase
+            attackVals[Player.R][1] += modifier.Item2; //Defense increase
+        }
+
+        if (LWeapon.weaponType == RWeapon.weaponType)
+        {
+            float LStats = attackVals[Player.L][0] + attackVals[Player.L][1];
+            float RStats = attackVals[Player.R][0] + attackVals[Player.R][1];
+            if (LStats > RStats)
+            {
+                //player L wins
+                return new WinnerData(Player.L, LStats - RStats, LWeapon.weaponType, RWeapon.weaponType);
+            }
+            else if (RStats < LStats)
+            {
+                //player R wins
+                return new WinnerData(Player.R, RStats - LStats, LWeapon.weaponType, RWeapon.weaponType);
+            }
+            else
+            {
+                //stalemate
+                return new WinnerData(Player.NaN, 0, LWeapon.weaponType, RWeapon.weaponType);
+            }
+        }
+        else if (LWeapon.GetWeakType() == RWeapon.weaponType)
+        {
+            //player R wins
+            return new WinnerData(Player.R, attackVals[Player.R][0] - attackVals[Player.L][1], LWeapon.weaponType, RWeapon.weaponType);
+        }
+        {
+            //player L wins
+            return new WinnerData(Player.L, attackVals[Player.L][0] - attackVals[Player.R][1], LWeapon.weaponType, RWeapon.weaponType);
         }
     }
 }

@@ -99,7 +99,39 @@ public class WeaponController : MonoBehaviour
         currentAttack = baseAttack;
         currentDefense = baseDefense;
     }
-    
+
+    public static WeaponType GetWeakType(WeaponType type)
+    {
+        if (type == WeaponType.Scissor)
+        {
+            return WeaponType.Rock;
+        }
+        else if (type == WeaponType.Paper)
+        {
+            return WeaponType.Scissor;
+        }
+        else
+        {
+            return WeaponType.Paper;
+        }
+    }
+
+    public static WeaponType GetStrongType(WeaponType type)
+    {
+        if (type == WeaponType.Scissor)
+        {
+            return WeaponType.Paper;
+        }
+        else if (type == WeaponType.Paper)
+        {
+            return WeaponType.Rock;
+        }
+        else
+        {
+            return WeaponType.Scissor;
+        }
+    }
+
     public WeaponType GetWeakType()
     {
         if (weaponType == WeaponType.Scissor)

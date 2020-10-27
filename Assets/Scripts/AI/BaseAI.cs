@@ -185,4 +185,36 @@ public abstract class BaseAI : MonoBehaviour
 
         return ret;
     }
+
+    protected static (CardType, CardData)? GetRandomAvailableCard(BaseAI instance)
+    {
+        List<(CardType, CardData)> availCards = GetAvailableCards(instance);
+        if (availCards.Count == 0)
+        {
+            return null;
+        }
+        return availCards[randObj.Next(0, availCards.Count)];
+    }
+
+    protected static (WeaponType, WeaponAttribute, float)? GetRandomAvailableUpgrade(BaseAI instance)
+    {
+        List<(WeaponType, WeaponAttribute, float)> availUpgrades = GetAvailableUpgrades(instance);
+        if (availUpgrades.Count == 0)
+        {
+            return null;
+        }
+        return availUpgrades[randObj.Next(0, availUpgrades.Count)];
+    }
+
+    protected static dynamic GetRandomAction(BaseAI instance)
+    {
+        if (randObj.Next(0, 2) == 0)
+        {
+            return GetRandomAvailableUpgrade(instance);
+        } 
+        else
+        {
+            return GetRandomAvailableCard(instance);
+        }
+    }
 }

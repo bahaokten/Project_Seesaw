@@ -38,7 +38,7 @@ public class CardController
     public static void UseCard(PlayerController player, BaseCard card)
     {
         player.cards.Remove(card);
-        GameController.instance.activeCards[player.player].Add(card);
+        GameController.instance.currentRoundCards[player.player].Add(card);
     }
 
     public static void DestroyCard(PlayerController player, BaseCard card)
@@ -81,6 +81,24 @@ public class CardController
         }
     }
 
+    //Will grow in size as cards have more abilities
+    //Currently describes extraAttack, extraDamage
+    public static (float, float) SimulateCardEffect(CardData data)
+    {
+        (float, float) ret = (0, 0);
+        foreach (KeyValuePair<CardModificationType, float> kv in data.modifications)
+        {
+            if (kv.Key == CardModificationType.IncrementAttack)
+            {
+                ret.Item1 += kv.Value;
+            }
+            else if (kv.Key == CardModificationType.IncrementDefense)
+            {
+                ret.Item2 += kv.Value;
+            }
+        }
+        return ret;
+    }
 }
 
 public static class CardFactory
@@ -114,6 +132,8 @@ public abstract class BaseCard
 
     public CardType type;
 
+    public CardData data;
+
     public PlayerController owner;
 
     private int _lifeSpan;
@@ -135,12 +155,13 @@ public abstract class BaseCard
 
     public Subscription<GameStateOver> GameStateOverSubscription;
 
-    public BaseCard(PlayerController _owner)
+    public BaseCard(PlayerController _owner, CardData _data)
     {
         owner = _owner;
         cardId = CardController.currAvailableCardId;
         type = CardType.BaseCard;
         lifeSpan = 1; //unused feature at the moment so set to 1
+        data = _data;
         GameStateOverSubscription = _EventBus.Subscribe<GameStateOver>(_OnGameStateOver);
     }
 
@@ -189,7 +210,7 @@ public class SelfAttackIncreaseAdditiveCurrent1 : BaseCard
 {
     protected float attackIncrease;
 
-    public SelfAttackIncreaseAdditiveCurrent1(PlayerController _owner, CardData data) : base(_owner)
+    public SelfAttackIncreaseAdditiveCurrent1(PlayerController _owner, CardData _data) : base(_owner, _data)
     {
         type = CardType.SelfAttackIncreaseAdditiveCurrent1;
         price = data.cost;
@@ -213,7 +234,7 @@ public class SelfDefenseIncreaseAdditiveCurrent1 : BaseCard
 {
     protected float attackIncrease;
 
-    public SelfDefenseIncreaseAdditiveCurrent1(PlayerController _owner, CardData data) : base(_owner)
+    public SelfDefenseIncreaseAdditiveCurrent1(PlayerController _owner, CardData _data) : base(_owner, _data)
     {
         type = CardType.SelfDefenseIncreaseAdditiveCurrent1;
         price = data.cost;
@@ -234,7 +255,7 @@ public class SelfDefenseIncreaseAdditiveCurrent1 : BaseCard
 
 public class SelfDefenseIncreaseAdditiveScissor1 : BaseCard
 {
-    public SelfDefenseIncreaseAdditiveScissor1(PlayerController _owner, CardData data) : base(_owner)
+    public SelfDefenseIncreaseAdditiveScissor1(PlayerController _owner, CardData _data) : base(_owner, _data)
     {
         type = CardType.SelfDefenseIncreaseAdditiveScissor1;
         price = data.cost;
@@ -255,7 +276,7 @@ public class SelfDefenseIncreaseAdditiveScissor1 : BaseCard
 
 public class OpponentDefenseDecreaseAdditiveScissor1 : BaseCard
 {
-    public OpponentDefenseDecreaseAdditiveScissor1(PlayerController _owner, CardData data) : base(_owner)
+    public OpponentDefenseDecreaseAdditiveScissor1(PlayerController _owner, CardData _data) : base(_owner, _data)
     {
         type = CardType.OpponentDefenseDecreaseAdditiveScissor1;
         price = data.cost;
@@ -276,7 +297,7 @@ public class OpponentDefenseDecreaseAdditiveScissor1 : BaseCard
 
 public class OpponentDefenseDecreaseMultScissor1 : BaseCard
 {
-    public OpponentDefenseDecreaseMultScissor1(PlayerController _owner, CardData data) : base(_owner)
+    public OpponentDefenseDecreaseMultScissor1(PlayerController _owner, CardData _data) : base(_owner, _data)
     {
         type = CardType.OpponentDefenseDecreaseMultScissor1;
         price = data.cost;
