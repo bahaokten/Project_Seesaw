@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// Tracks opponent's pick habits, and tries to guess what they are going to choose
+/// Picks the weapon with winning matchup
+/// Prioritizes Upgrading picked weapon's random attribute
+/// If current weapon cannot be upgraded, tries to buy and use a card
+/// </summary>
 public class Simp_Tracker : BaseAI
 {
     Queue<WeaponType> opponentPicks;
@@ -75,10 +81,21 @@ public class Simp_Tracker : BaseAI
 
     protected override void ActionPhase()
     {
+        if (pc.cards.Count != 0)
+        {
+            _EventBus.Publish<CardUsed>(new CardUsed(pc, pc.cards[0].type));
+        } else if (upgradePick != null)
+        {
+            _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(pc, upgradePick.Value.Item1, upgradePick.Value.Item2));
+        } else
+        {
+            _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
+        }
     }
 
     protected override void AttackPhase()
     {
+        _EventBus.Publish<AttackWeaponPicked>(new AttackWeaponPicked(pc, currentPick));
     }
 
     protected override void PostAttackPhase(bool isWinner, WeaponType opponentWeapon)

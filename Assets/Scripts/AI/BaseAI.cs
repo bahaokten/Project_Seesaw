@@ -205,16 +205,4 @@ public abstract class BaseAI : MonoBehaviour
         }
         return availUpgrades[randObj.Next(0, availUpgrades.Count)];
     }
-
-    protected static dynamic GetRandomAction(BaseAI instance)
-    {
-        if (randObj.Next(0, 2) == 0)
-        {
-            return GetRandomAvailableUpgrade(instance);
-        } 
-        else
-        {
-            return GetRandomAvailableCard(instance);
-        }
-    }
 }

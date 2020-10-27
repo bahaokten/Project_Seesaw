@@ -1,5 +1,8 @@
 ﻿using System;
 
+/// <summary>
+/// Chooses weapon, upgrades, and cards that will yield the most coins if won.
+/// </summary>
 public abstract class BaseMid_Greedy : BaseAI
 {
     protected PlayerController opponentPc;

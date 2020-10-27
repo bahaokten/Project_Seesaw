@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Always attempts to upgrade scissor's attack attribute
+/// Doesn't buy any cards
+/// Has an 80% chance of choosing and 10% chance for each other weapon
+/// </summary>
 public class Simp_ScissorLover : BaseAI
 {
     protected override void Initialize()
