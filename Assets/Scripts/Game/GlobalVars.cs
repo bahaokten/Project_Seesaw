@@ -25,9 +25,11 @@ public enum PlayerType
 {
     Human,
     Simp_ScissorLover,
+    Simp_Random,
     Mid_GreedyAttacker,
     Mid_GreedyDefender,
-    Mid_GreedyMixed
+    Mid_GreedyMixed,
+    Mid_Tracker
 }
 
 public enum WeaponAttribute
@@ -88,8 +90,9 @@ public class GlobalVars : MonoBehaviour
     public static readonly string PYTHON_LOC = "python.exe";
 
     //CONSTANTS
-    public static readonly int SCORE_TO_WIN = 2;
+    public static readonly int SCORE_TO_WIN = 20;
 
+    public static readonly int INITIAL_COINS = 5;
     public static readonly float WINNING_ROUND_BASE_COINS = 1;
 
     public static readonly float INIT_ATTACK = 1.0f;

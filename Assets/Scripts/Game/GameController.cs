@@ -319,7 +319,6 @@ public class GameController : MonoBehaviour
                 while (nextCard != null)
                 {
                     //DO CARDS
-                    print(nextCard.GetType());
                     nextCard.DoPreAttackAction();
                     nextCard = cardIt.GetNextCard();
                 }

@@ -10,7 +10,7 @@ using UnityEngine;
 /// Prioritizes Upgrading picked weapon's random attribute
 /// If current weapon cannot be upgraded, tries to buy and use a card
 /// </summary>
-public class Simp_Tracker : BaseAI
+public class Mid_Tracker : BaseAI
 {
     Queue<WeaponType> opponentPicks;
     int trackSize = 10;

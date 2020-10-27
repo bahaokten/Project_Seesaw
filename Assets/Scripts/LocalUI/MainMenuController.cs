@@ -35,6 +35,9 @@ public class MainMenuController : MonoBehaviour
             case "Simp_ScissorLover":
                 newType = PlayerType.Simp_ScissorLover;
                 break;
+            case "Simp_Random":
+                newType = PlayerType.Simp_Random;
+                break;
             case "Mid_GreedyAttacker":
                 newType = PlayerType.Mid_GreedyAttacker;
                 break;
@@ -43,6 +46,9 @@ public class MainMenuController : MonoBehaviour
                 break;
             case "Mid_GreedyMixed":
                 newType = PlayerType.Mid_GreedyMixed;
+                break;
+            case "Mid_Tracker":
+                newType = PlayerType.Mid_Tracker;
                 break;
         }
 

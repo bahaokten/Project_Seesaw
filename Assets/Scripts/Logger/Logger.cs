@@ -193,32 +193,32 @@ public class Logger : MonoBehaviour
         sheet.SetCell(25, currRow, currGameData.playerWeaponUsage[Player.L][WeaponType.Scissor] / totalRounds);
         //LWeaponWins%_Scissor
         sheet.SetCell(26, currRow, (currGameData.playerWeaponUsage[Player.L][WeaponType.Scissor] == 0) ? 0 :
-            currGameData.playerWeaponWins[Player.L][WeaponType.Scissor] / currGameData.playerWeaponUsage[Player.L][WeaponType.Scissor]);
+            currGameData.playerWeaponWins[Player.L][WeaponType.Scissor] / (float) currGameData.playerWeaponUsage[Player.L][WeaponType.Scissor]);
         //LWeaponUsage%_Paper
         sheet.SetCell(27, currRow, currGameData.playerWeaponUsage[Player.L][WeaponType.Paper] / totalRounds);
         //LWeaponWins%_Paper
         sheet.SetCell(28, currRow, (currGameData.playerWeaponUsage[Player.L][WeaponType.Paper] == 0) ? 0 :
-            currGameData.playerWeaponWins[Player.L][WeaponType.Paper] / currGameData.playerWeaponUsage[Player.L][WeaponType.Paper]);
+            currGameData.playerWeaponWins[Player.L][WeaponType.Paper] / (float) currGameData.playerWeaponUsage[Player.L][WeaponType.Paper]);
         //LWeaponUsage%_Rock
         sheet.SetCell(29, currRow, currGameData.playerWeaponUsage[Player.L][WeaponType.Rock] / totalRounds);
         //LWeaponWins%_Rock
         sheet.SetCell(30, currRow, (currGameData.playerWeaponUsage[Player.L][WeaponType.Rock] == 0) ? 0 :
-            currGameData.playerWeaponWins[Player.L][WeaponType.Rock] / currGameData.playerWeaponUsage[Player.L][WeaponType.Rock]);
+            currGameData.playerWeaponWins[Player.L][WeaponType.Rock] / (float) currGameData.playerWeaponUsage[Player.L][WeaponType.Rock]);
         //RWeaponUsage%_Scissor
         sheet.SetCell(31, currRow, currGameData.playerWeaponUsage[Player.R][WeaponType.Scissor] / totalRounds);
         //RWeaponWins%_Scissor
         sheet.SetCell(32, currRow, (currGameData.playerWeaponUsage[Player.R][WeaponType.Scissor] == 0) ? 0 :
-            currGameData.playerWeaponWins[Player.R][WeaponType.Scissor] / currGameData.playerWeaponUsage[Player.R][WeaponType.Scissor]);
+            currGameData.playerWeaponWins[Player.R][WeaponType.Scissor] / (float) currGameData.playerWeaponUsage[Player.R][WeaponType.Scissor]);
         //RWeaponUsage%_Paper
         sheet.SetCell(33, currRow, currGameData.playerWeaponUsage[Player.R][WeaponType.Paper] / totalRounds);
         //RWeaponWins%_Paper
         sheet.SetCell(34, currRow, (currGameData.playerWeaponUsage[Player.R][WeaponType.Paper] == 0) ? 0 :
-            currGameData.playerWeaponWins[Player.R][WeaponType.Paper] / currGameData.playerWeaponUsage[Player.R][WeaponType.Paper]);
+            currGameData.playerWeaponWins[Player.R][WeaponType.Paper] / (float) currGameData.playerWeaponUsage[Player.R][WeaponType.Paper]);
         //RWeaponUsage%_Rock
         sheet.SetCell(35, currRow, currGameData.playerWeaponUsage[Player.R][WeaponType.Rock] / totalRounds);
         //RWeaponWins%_Rock
         sheet.SetCell(36, currRow, (currGameData.playerWeaponUsage[Player.R][WeaponType.Rock] == 0) ? 0 :
-            currGameData.playerWeaponWins[Player.R][WeaponType.Rock] / currGameData.playerWeaponUsage[Player.R][WeaponType.Rock]);
+            currGameData.playerWeaponWins[Player.R][WeaponType.Rock] / (float) currGameData.playerWeaponUsage[Player.R][WeaponType.Rock]);
         //LUpgrades_Scissor_Att
         sheet.SetCell(37, currRow, currGameData.playerWeaponAttributeUpgrades[Player.L][WeaponType.Scissor][WeaponAttribute.Attack]);
         //LUpgrades_Scissor_Def

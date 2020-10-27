@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
     public void Start()
     {
         score = 0;
-        coins = 5;
+        coins = GlobalVars.INITIAL_COINS;
 
         cards = new List<BaseCard>();
 

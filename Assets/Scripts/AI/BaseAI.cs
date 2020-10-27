@@ -34,12 +34,16 @@ public abstract class BaseAI : MonoBehaviour
         {
             case PlayerType.Simp_ScissorLover:
                 return typeof(Simp_ScissorLover);
+            case PlayerType.Simp_Random:
+                return typeof(Simp_Random);
             case PlayerType.Mid_GreedyAttacker:
                 return typeof(Mid_GreedyAttacker);
             case PlayerType.Mid_GreedyDefender:
                 return typeof(Mid_GreedyDefender);
             case PlayerType.Mid_GreedyMixed:
                 return typeof(Mid_GreedyMixed);
+            case PlayerType.Mid_Tracker:
+                return typeof(Mid_Tracker);
         }
         //Human
         return null;
@@ -165,7 +169,7 @@ public abstract class BaseAI : MonoBehaviour
             }
             if (instance.pc.CanUpgradeWeapon(type, WeaponAttribute.Defense))
             {
-                ret.Add((type, WeaponAttribute.Attack, instance.pc.GetWeapon(type).GetUpgradePrice(WeaponAttribute.Defense)));
+                ret.Add((type, WeaponAttribute.Defense, instance.pc.GetWeapon(type).GetUpgradePrice(WeaponAttribute.Defense)));
             }
         }
         return ret;
