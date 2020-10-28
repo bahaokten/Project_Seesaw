@@ -25,7 +25,10 @@ public enum PlayerType
 {
     Human,
     Simp_ScissorLover,
+    Simp_ScissorLover2,
     Simp_Random,
+    Simp_RandomUpgrade,
+    Simp_RandomCard,
     Mid_GreedyAttacker,
     Mid_GreedyDefender,
     Mid_GreedyMixed,
@@ -90,7 +93,7 @@ public class GlobalVars : MonoBehaviour
     public static readonly string PYTHON_LOC = "python.exe";
 
     //CONSTANTS
-    public static readonly int SCORE_TO_WIN = 20;
+    public static readonly int SCORE_TO_WIN = 100;
 
     public static readonly int INITIAL_COINS = 5;
     public static readonly float WINNING_ROUND_BASE_COINS = 1;
@@ -98,15 +101,15 @@ public class GlobalVars : MonoBehaviour
     public static readonly float INIT_ATTACK = 1.0f;
     public static readonly float INIT_DEFENSE = 1.0f;
 
-    public static readonly List<int> WEAPON_LEVEL_UPGRADE_PRICES_ATTACK = new List<int> { 5, 10, 20, 40 };
-    public static readonly List<int> WEAPON_LEVEL_UPGRADE_PRICES_DEFENSE = new List<int> { 2, 4, 8, 16 };
+    public static readonly List<int> WEAPON_LEVEL_UPGRADE_PRICES_ATTACK = new List<int> { 4, 6, 8, 10 };
+    public static readonly List<int> WEAPON_LEVEL_UPGRADE_PRICES_DEFENSE = new List<int> { 2, 4, 6, 8 };
     public static readonly List<float> WEAPON_LEVEL_UPGRADE_AMOUNT = new List<float> { 0.5f, 0.5f, 0.5f, 0.5f };
     public static int maxWeaponLevel = WEAPON_LEVEL_UPGRADE_AMOUNT.Count;
 
     public static readonly Dictionary<CardType, CardData> cardData = new Dictionary<CardType, CardData>()
     {
         { CardType.SelfAttackIncreaseAdditiveCurrent1, new CardData(2, _modifications : new Dictionary<CardModificationType, float>() { { CardModificationType.IncrementAttack, 0.5f } }) },
-        { CardType.SelfDefenseIncreaseAdditiveCurrent1, new CardData(1) }
+        { CardType.SelfDefenseIncreaseAdditiveCurrent1, new CardData(1, _modifications : new Dictionary<CardModificationType, float>() { { CardModificationType.IncrementDefense, 1f } }) }
         //{ CardType.SelfDefenseIncreaseAdditiveScissor1, new CardData(2) },
         //{ CardType.OpponentDefenseDecreaseAdditiveScissor1, new CardData(3) },
         //{ CardType.OpponentDefenseDecreaseMultScissor1, new CardData(6, 3) }

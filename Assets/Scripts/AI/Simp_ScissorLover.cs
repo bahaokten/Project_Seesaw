@@ -26,6 +26,9 @@ public class Simp_ScissorLover : BaseAI
         if (pc.CanUpgradeWeapon(WeaponType.Scissor, WeaponAttribute.Attack))
         {
             _EventBus.Publish<WeaponUpgraded>(new WeaponUpgraded(pc, WeaponType.Scissor, WeaponAttribute.Attack));
+        } else
+        {
+            _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
         }
     }
 

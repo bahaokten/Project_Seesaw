@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine.XR;
 
 /// <summary>
 /// Chooses weapon, upgrades, and cards that will yield the most coins if won.
@@ -9,7 +11,7 @@ public abstract class BaseMid_Greedy : BaseAI
     protected bool canBuyUpgrade = false;
     protected WeaponType upgradableWeaponType;
 
-    protected bool cardUsed = false;
+    protected List<CardData> currRoundCards;
 
     protected WeaponAttribute attrOfInterest;
     protected CardType cardOfInterest;
@@ -22,6 +24,7 @@ public abstract class BaseMid_Greedy : BaseAI
     protected override void Initialize()
     {
         opponentPc = GameController.instance.GetOpponentPlayer(pc);
+        currRoundCards = new List<CardData>();
         SetInterest();
     }
 
@@ -61,7 +64,7 @@ public abstract class BaseMid_Greedy : BaseAI
             if (pc.cards.Count != 0)
             {
                 _EventBus.Publish<CardUsed>(new CardUsed(pc, cardOfInterest));
-                cardUsed = true;
+                currRoundCards.Add(GlobalVars.cardData[cardOfInterest]);
             } else
             {
                 _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
@@ -72,20 +75,31 @@ public abstract class BaseMid_Greedy : BaseAI
     protected override void AttackPhase()
     {
         float highestDamage = -1000;
-        float cardDamageAdd = 0;
         WeaponType attackType = WeaponType.Scissor;
 
-        if (cardUsed)
-        {
-            cardDamageAdd = 0.5f;
-        }
+        Dictionary<Player, List<CardData>> cards = new Dictionary<Player, List<CardData>>() { { pc.player, currRoundCards } };
 
         foreach (WeaponType type in Enum.GetValues(typeof(WeaponType)))
         {
-            float currDamage = pc.GetWeapon(type).baseAttack + cardDamageAdd - opponentPc.GetWeapon(pc.GetWeapon(type).GetStrongType()).baseDefense;
-            if (currDamage > highestDamage)
+            Dictionary<Player, WeaponType> pWeapon = new Dictionary<Player, WeaponType>();
+            pWeapon[pc.player] = type;
+
+            //Same weapon
+            pWeapon[GameController.instance.GetOpponentPlayerType()] = type;
+            WinnerData data1 = GameController.instance.SimulateRound(pWeapon, cards);
+            if (data1.winner != pc.player)
             {
-                highestDamage = currDamage;
+                data1.winnerAttDefDiff = 0;
+            }
+
+            //Opponent picks strong type
+            pWeapon[GameController.instance.GetOpponentPlayerType()] = WeaponController.GetStrongType(type);
+            WinnerData data2 = GameController.instance.SimulateRound(pWeapon, cards);
+
+            //Average both scenarios
+            if ((data1.winnerAttDefDiff + data2.winnerAttDefDiff ) /2  > highestDamage)
+            {
+                highestDamage = (data1.winnerAttDefDiff + data2.winnerAttDefDiff) / 2;
                 attackType = type;
             }
         }
@@ -95,6 +109,6 @@ public abstract class BaseMid_Greedy : BaseAI
     protected override void PostAttackPhase(bool isWinner, WeaponType opponentWeapon)
     {
         canBuyUpgrade = false;
-        cardUsed = false;
+        currRoundCards.Clear();
     }
 }

@@ -34,8 +34,14 @@ public abstract class BaseAI : MonoBehaviour
         {
             case PlayerType.Simp_ScissorLover:
                 return typeof(Simp_ScissorLover);
+            case PlayerType.Simp_ScissorLover2:
+                return typeof(Simp_ScissorLover2);
             case PlayerType.Simp_Random:
                 return typeof(Simp_Random);
+            case PlayerType.Simp_RandomUpgrade:
+                return typeof(Simp_RandomUpgrade);
+            case PlayerType.Simp_RandomCard:
+                return typeof(Simp_RandomCard);
             case PlayerType.Mid_GreedyAttacker:
                 return typeof(Mid_GreedyAttacker);
             case PlayerType.Mid_GreedyDefender:

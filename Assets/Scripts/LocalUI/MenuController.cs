@@ -41,7 +41,7 @@ public class MenuController : MonoBehaviour
     [HideInInspector]
     public GameObject currMenuObj;
 
-    public float swapDuration = 0.4f;
+    public float swapDuration = 0.2f;
 
     Subscription<MenuStateChanged> MenuStateChangedSubscription;
 
@@ -253,6 +253,7 @@ public class MenuController : MonoBehaviour
     static float weaponFlyBounceBackTime = 0.5f;
     static float weaponPreAttack = 0.5f;
     static float winningTextDisplayTime = 2f;
+
     static float winnerScale = 1.2f;
     static float loserScale = 0.8f;
 

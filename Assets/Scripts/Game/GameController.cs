@@ -374,7 +374,7 @@ public class GameController : MonoBehaviour
                 //player L wins
                 return new WinnerData(Player.L, LStats - RStats, LWeapon.weaponType, RWeapon.weaponType);
             }
-            else if(RStats < LStats)
+            else if(RStats > LStats)
             {
                 //player R wins
                 return new WinnerData(Player.R, RStats - LStats, LWeapon.weaponType, RWeapon.weaponType);
@@ -502,10 +502,10 @@ public class GameController : MonoBehaviour
     }
 
     //Used by AI, remembers previous rounds cards
-    public WinnerData SimulateRound(WeaponType playerLWeaponT, WeaponType playerRWeaponT, List<CardData> playerLCards = null, List<CardData> playerRCards = null)
+    public WinnerData SimulateRound(Dictionary<Player, WeaponType> pWeapon, Dictionary<Player, List<CardData>> playerCards)
     {
-        WeaponController LWeapon = playerControllerL.GetWeapon(playerLWeaponT);
-        WeaponController RWeapon = playerControllerR.GetWeapon(playerRWeaponT);
+        WeaponController LWeapon = playerControllerL.GetWeapon(pWeapon[Player.L]);
+        WeaponController RWeapon = playerControllerR.GetWeapon(pWeapon[Player.L]);
 
         Dictionary<Player, List<float>> attackVals = new Dictionary<Player, List<float>>()
         {
@@ -523,14 +523,14 @@ public class GameController : MonoBehaviour
             }
         }
 
-        foreach (CardData cd in playerLCards)
+        foreach (CardData cd in playerCards[Player.L])
         {
             (float, float) modifier = CardController.SimulateCardEffect(cd);
             attackVals[Player.L][0] += modifier.Item1; //Attack increase
             attackVals[Player.L][1] += modifier.Item2; //Defense increase
         }
 
-        foreach (CardData cd in playerRCards)
+        foreach (CardData cd in playerCards[Player.R])
         {
             (float, float) modifier = CardController.SimulateCardEffect(cd);
             attackVals[Player.R][0] += modifier.Item1; //Attack increase
