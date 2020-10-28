@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Never tries to buy a car
+/// Never tries to buy a card
 /// Tries to buy an upgrade 33% of the time if the player has less than 5 coins
 /// Tries to buy an upgrade 100% of the time (prefers attack upgrade) if player has 5 or more coins
 /// Chooses each weapon with 33.3% chance

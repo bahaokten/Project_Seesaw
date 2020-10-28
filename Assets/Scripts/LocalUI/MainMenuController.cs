@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using TMPro;
 
 public class MainMenuController : MonoBehaviour
 {
+    public TMP_InputField scoreToWin;
     
     public void ChangeLType(string t)
     {
@@ -18,6 +20,7 @@ public class MainMenuController : MonoBehaviour
 
     public void Start()
     {
+        scoreToWin.text = GlobalVars.SCORE_TO_WIN.ToString();
     }
 
 
@@ -78,6 +81,10 @@ public class MainMenuController : MonoBehaviour
     public void StartGame()
     {
         GlobalVars.instance.currGamesToPlay = GlobalVars.instance.numGamesToPlay;
+        int currScore = 0;
+        int.TryParse(scoreToWin.text, out currScore);
+        GlobalVars.SCORE_TO_WIN =  currScore;
+        print(GlobalVars.SCORE_TO_WIN);
         SceneManager.LoadScene("Game");
     }
 

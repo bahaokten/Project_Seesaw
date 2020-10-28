@@ -5,7 +5,7 @@ using UnityEngine;
 
 /// <summary>
 /// Tries to buy a card every round and use it
-/// Never trues to upgrade
+/// Never tries to upgrade
 /// Chooses each weapon with 33.3% chance
 /// </summary>
 public class Simp_RandomCard: Simp_Random

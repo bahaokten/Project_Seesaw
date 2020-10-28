@@ -93,7 +93,7 @@ public class GlobalVars : MonoBehaviour
     public static readonly string PYTHON_LOC = "python.exe";
 
     //CONSTANTS
-    public static readonly int SCORE_TO_WIN = 100;
+    public static int SCORE_TO_WIN = 20;
 
     public static readonly int INITIAL_COINS = 5;
     public static readonly float WINNING_ROUND_BASE_COINS = 1;
