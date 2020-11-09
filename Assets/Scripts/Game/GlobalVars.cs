@@ -32,7 +32,8 @@ public enum PlayerType
     Mid_GreedyAttacker,
     Mid_GreedyDefender,
     Mid_GreedyMixed,
-    Mid_Tracker
+    Mid_Tracker,
+    Mid_Tracker2
 }
 
 public enum WeaponAttribute
@@ -109,7 +110,7 @@ public class GlobalVars : MonoBehaviour
     public static readonly Dictionary<CardType, CardData> cardData = new Dictionary<CardType, CardData>()
     {
         { CardType.SelfAttackIncreaseAdditiveCurrent1, new CardData(2, _modifications : new Dictionary<CardModificationType, float>() { { CardModificationType.IncrementAttack, 0.5f } }) },
-        { CardType.SelfDefenseIncreaseAdditiveCurrent1, new CardData(1, _modifications : new Dictionary<CardModificationType, float>() { { CardModificationType.IncrementDefense, 1f } }) }
+        { CardType.SelfDefenseIncreaseAdditiveCurrent1, new CardData(1f, _modifications : new Dictionary<CardModificationType, float>() { { CardModificationType.IncrementDefense, 1f } }) }
         //{ CardType.SelfDefenseIncreaseAdditiveScissor1, new CardData(2) },
         //{ CardType.OpponentDefenseDecreaseAdditiveScissor1, new CardData(3) },
         //{ CardType.OpponentDefenseDecreaseMultScissor1, new CardData(6, 3) }

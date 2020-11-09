@@ -62,6 +62,9 @@ public class MainMenuController : MonoBehaviour
             case "Mid_Tracker":
                 newType = PlayerType.Mid_Tracker;
                 break;
+            case "Mid_Tracker2":
+                newType = PlayerType.Mid_Tracker2;
+                break;
         }
 
         if (isLPlayer)

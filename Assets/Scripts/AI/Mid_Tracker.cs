@@ -12,11 +12,11 @@ using UnityEngine;
 /// </summary>
 public class Mid_Tracker : BaseAI
 {
-    Queue<WeaponType> opponentPicks;
-    int trackSize = 10;
+    protected Queue<WeaponType> opponentPicks;
+    protected int trackSize = 10;
 
-    WeaponType currentPick;
-    (WeaponType, WeaponAttribute, float)? upgradePick = null;
+    protected WeaponType currentPick;
+    protected (WeaponType, WeaponAttribute, float)? upgradePick = null;
 
     protected Dictionary<WeaponType, float> GetOpponentWeaponRatios()
     {
@@ -46,7 +46,7 @@ public class Mid_Tracker : BaseAI
 
     protected override void BuyPhase()
     {
-        List<(WeaponType, float)> opponentWeaponPrediction = new List<(WeaponType, float)>() { (WeaponType.Scissor, -1) };
+        List<(WeaponType, float)> opponentWeaponPrediction = new List<(WeaponType, float)>() { (WeaponType.Scissor, -1), (WeaponType.Paper, -1), (WeaponType.Rock, -1) };
 
         foreach (KeyValuePair<WeaponType, float> kv in GetOpponentWeaponRatios())
         {
@@ -59,7 +59,6 @@ public class Mid_Tracker : BaseAI
                 opponentWeaponPrediction.Add((kv.Key, kv.Value));
             }
         }
-
         //Pick what weapon to play
         currentPick = WeaponController.GetWeakType(opponentWeaponPrediction[randObj.Next(0, opponentWeaponPrediction.Count())].Item1);
 
@@ -70,10 +69,12 @@ public class Mid_Tracker : BaseAI
         {
             upgradePick = availUpgrades[randObj.Next(0, availUpgrades.Count)];
             _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
-        } else if (availCard != null)
+        } 
+        else if (availCard != null)
         {
             _EventBus.Publish<CardPurchased>(new CardPurchased(pc, availCard.Value.Item1));
-        } else
+        } 
+        else
         {
             _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
         }

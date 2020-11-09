@@ -50,6 +50,8 @@ public abstract class BaseAI : MonoBehaviour
                 return typeof(Mid_GreedyMixed);
             case PlayerType.Mid_Tracker:
                 return typeof(Mid_Tracker);
+            case PlayerType.Mid_Tracker2:
+                return typeof(Mid_Tracker2);
         }
         //Human
         return null;

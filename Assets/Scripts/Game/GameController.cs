@@ -523,20 +523,16 @@ public class GameController : MonoBehaviour
             }
         }
 
-        foreach (CardData cd in playerCards[Player.L])
+        foreach (KeyValuePair<Player, List<CardData>> kv in playerCards)
         {
-            (float, float) modifier = CardController.SimulateCardEffect(cd);
-            attackVals[Player.L][0] += modifier.Item1; //Attack increase
-            attackVals[Player.L][1] += modifier.Item2; //Defense increase
+            foreach (CardData cd in playerCards[kv.Key])
+            {
+                (float, float) modifier = CardController.SimulateCardEffect(cd);
+                attackVals[Player.L][0] += modifier.Item1; //Attack increase
+                attackVals[Player.L][1] += modifier.Item2; //Defense increase
+            }
         }
-
-        foreach (CardData cd in playerCards[Player.R])
-        {
-            (float, float) modifier = CardController.SimulateCardEffect(cd);
-            attackVals[Player.R][0] += modifier.Item1; //Attack increase
-            attackVals[Player.R][1] += modifier.Item2; //Defense increase
-        }
-
+        
         if (LWeapon.weaponType == RWeapon.weaponType)
         {
             float LStats = attackVals[Player.L][0] + attackVals[Player.L][1];

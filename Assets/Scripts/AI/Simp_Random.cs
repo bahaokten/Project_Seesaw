@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Tries to buy a card 66% of the time
+/// Tries to buy a card 33% of the time
 /// Tries to upgrade 50% of the time
 /// Chooses each weapon with 33.3% chance
 /// </summary>
@@ -16,7 +16,7 @@ public class Simp_Random: BaseAI
 
     protected override void BuyPhase()
     {
-        if (randObj.Next(0, 3) == 0)
+        if (randObj.Next(0, 3) != 0)
         {
             _EventBus.Publish<EndTurnPhase>(new EndTurnPhase(pc));
         }

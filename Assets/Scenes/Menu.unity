@@ -1776,7 +1776,7 @@ PrefabInstance:
     - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
         type: 3}
       propertyPath: dropdownItems.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
         type: 3}
@@ -1826,6 +1826,11 @@ PrefabInstance:
     - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
         type: 3}
       propertyPath: dropdownItems.Array.data[9].OnItemSelection.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
@@ -2330,6 +2335,52 @@ PrefabInstance:
         type: 3}
       propertyPath: dropdownItems.Array.data[9].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: Simp_RandomCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].itemName
+      value: Mid Tracker 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].itemIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 2ea2a410821d1e74a8b58fd3ae84d641,
+        type: 3}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1355070108}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MainMenuController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ChangeRType
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Mid_Tracker2
       objectReference: {fileID: 0}
     - target: {fileID: 114805977690160460, guid: 1190c8fdb950aad4a8076926f4a8b827,
         type: 3}
@@ -2846,7 +2897,7 @@ PrefabInstance:
     - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
         type: 3}
       propertyPath: dropdownItems.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
         type: 3}
@@ -2896,6 +2947,11 @@ PrefabInstance:
     - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
         type: 3}
       propertyPath: dropdownItems.Array.data[9].OnItemSelection.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
@@ -3400,6 +3456,52 @@ PrefabInstance:
         type: 3}
       propertyPath: dropdownItems.Array.data[9].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: Simp_RandomCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].itemName
+      value: Mid Tracker 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].itemIcon
+      value: 
+      objectReference: {fileID: 21300000, guid: 2ea2a410821d1e74a8b58fd3ae84d641,
+        type: 3}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1355070108}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MainMenuController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ChangeLType
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 114726610096788064, guid: 1190c8fdb950aad4a8076926f4a8b827,
+        type: 3}
+      propertyPath: dropdownItems.Array.data[10].OnItemSelection.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Mid_Tracker2
       objectReference: {fileID: 0}
     - target: {fileID: 114805977690160460, guid: 1190c8fdb950aad4a8076926f4a8b827,
         type: 3}
