@@ -56,6 +56,8 @@ public class GameController : MonoBehaviour
     public Subscription<CurrentPlayerChanged> CurrentPlayerChangedSubscription;
     public Subscription<GameOver> GameOverSubscription;
 
+    public System.Random randObj;
+
     void Awake()
     {
         if (instance == null)
@@ -81,6 +83,8 @@ public class GameController : MonoBehaviour
 
         playerControllerL = playerL.GetComponent<PlayerController>();
         playerControllerR = playerR.GetComponent<PlayerController>();
+
+        randObj = new System.Random();
     }
 
     void Start()
@@ -380,8 +384,12 @@ public class GameController : MonoBehaviour
                 return new WinnerData(Player.R, RStats - LStats, LWeapon.weaponType, RWeapon.weaponType);
             }
             else
-            {
-                //stalemate
+            {   //stalemate
+                //stalemate streak reached max value, break the stalemate
+                if (GlobalVars.instance.currentStalemateStreak == GlobalVars.MAX_STALEMATE_STREAK)
+                {
+                    return StalemateStreakBreaker(LWeapon, RWeapon);
+                }
                 return new WinnerData(Player.NaN, 0, LWeapon.weaponType, RWeapon.weaponType);
             }
         } else if (LWeapon.GetWeakType() == RWeapon.weaponType)
@@ -392,6 +400,85 @@ public class GameController : MonoBehaviour
         {
             //player L wins
             return new WinnerData(Player.L, LWeapon.currentAttack - RWeapon.currentDefense, LWeapon.weaponType, RWeapon.weaponType);
+        }
+    }
+
+    public WinnerData StalemateStreakBreaker(WeaponController LWeapon, WeaponController RWeapon)
+    {
+        GlobalVars.instance.currentStalemateStreak = 0;
+        float LTotWeaponStats = playerControllerL.GetTotalWeaponStats();
+        float RTotWeaponStats = playerControllerR.GetTotalWeaponStats();
+        //The player with highest total stats win
+        if (LTotWeaponStats > RTotWeaponStats)
+        {
+            return new WinnerData(Player.L, -1, LWeapon.weaponType, RWeapon.weaponType);
+        }
+        else if (RTotWeaponStats > LTotWeaponStats)
+        {
+            return new WinnerData(Player.R, -1, LWeapon.weaponType, RWeapon.weaponType);
+        }
+        else
+        {
+            //The player with most coins win
+            if (playerControllerL.coins > playerControllerR.coins)
+            {
+                return new WinnerData(Player.L, -1, LWeapon.weaponType, RWeapon.weaponType);
+            }
+            else if (playerControllerR.coins > playerControllerL.coins)
+            {
+                return new WinnerData(Player.R, -1, LWeapon.weaponType, RWeapon.weaponType);
+            }
+            else
+            {
+                //The player with most upgrades and cards win
+                int totLCardUpgrades = playerControllerL.GetTotalCards() + playerControllerL.GetTotalUpgrades();
+                int totRCardUpgrades = playerControllerR.GetTotalCards() + playerControllerR.GetTotalUpgrades();
+                if (totLCardUpgrades > totRCardUpgrades)
+                {
+                    return new WinnerData(Player.L, -1, LWeapon.weaponType, RWeapon.weaponType);
+                }
+                else if (totRCardUpgrades > totLCardUpgrades)
+                {
+                    return new WinnerData(Player.R, -1, LWeapon.weaponType, RWeapon.weaponType);
+                }
+                else
+                {
+                    //The player with higher score wins
+                    if (playerControllerL.score > playerControllerR.score)
+                    {
+                        return new WinnerData(Player.L, -1, LWeapon.weaponType, RWeapon.weaponType);
+                    } 
+                    else if (playerControllerR.score > playerControllerL.score)
+                    {
+                        return new WinnerData(Player.R, -1, LWeapon.weaponType, RWeapon.weaponType);
+                    } else
+                    {
+                        //Human player wins
+                        if (GlobalVars.instance.LType == PlayerType.Human ^ GlobalVars.instance.RType == PlayerType.Human)
+                        {
+                            if (GlobalVars.instance.LType == PlayerType.Human)
+                            {
+                                return new WinnerData(Player.L, -1, LWeapon.weaponType, RWeapon.weaponType);
+                            }
+                            else
+                            {
+                                return new WinnerData(Player.R, -1, LWeapon.weaponType, RWeapon.weaponType);
+                            }
+                        }
+                        else
+                        {
+                            //Random player wins
+                            if (randObj.Next(0, 2) == 0)
+                            {
+                                return new WinnerData(Player.L, -1, LWeapon.weaponType, RWeapon.weaponType);
+                            } else
+                            {
+                                return new WinnerData(Player.R, -1, LWeapon.weaponType, RWeapon.weaponType);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -419,6 +506,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
+            GlobalVars.instance.currentStalemateStreak++;
             _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.NaN, 0, 0, 0));
         }
         return Player.NaN;

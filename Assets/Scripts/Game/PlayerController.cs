@@ -21,6 +21,9 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public Dictionary<WeaponType, WeaponController> weapons;
 
+    //Card related
+    public List<BaseCard> cards;
+
     //Score related
     private float _score;
     private float _coins;
@@ -49,9 +52,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //Card related
-    public List<BaseCard> cards;
-
     public void Awake()
     {
         scissorController.parentPlayer = player;
@@ -77,6 +77,31 @@ public class PlayerController : MonoBehaviour
         scissorController.ResetCurrentStats();
         paperController.ResetCurrentStats();
         rockController.ResetCurrentStats();
+    }
+
+    public float GetTotalWeaponStats()
+    {
+        float totStats = 0;
+        foreach (KeyValuePair<WeaponType, WeaponController> kv in weapons)
+        {
+            totStats += kv.Value.currentAttack + kv.Value.currentDefense;
+        }
+        return totStats;
+    }
+
+    public int GetTotalUpgrades()
+    {
+        int totUpgrades = 0;
+        foreach (KeyValuePair<WeaponType, WeaponController> kv in weapons)
+        {
+            totUpgrades = kv.Value.attackLevel + kv.Value.defenseLevel;
+        }
+        return totUpgrades;
+    } 
+    
+    public int GetTotalCards()
+    {
+        return cards.Count;
     }
 
     public WeaponController GetWeapon(WeaponType weapon_t)

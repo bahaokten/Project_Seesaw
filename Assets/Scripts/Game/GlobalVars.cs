@@ -107,6 +107,8 @@ public class GlobalVars : MonoBehaviour
     public static readonly List<float> WEAPON_LEVEL_UPGRADE_AMOUNT = new List<float> { 0.5f, 0.5f, 0.5f, 0.5f };
     public static int maxWeaponLevel = WEAPON_LEVEL_UPGRADE_AMOUNT.Count;
 
+    public static int MAX_STALEMATE_STREAK = 3;
+
     public static readonly Dictionary<CardType, CardData> cardData = new Dictionary<CardType, CardData>()
     {
         { CardType.SelfAttackIncreaseAdditiveCurrent1, new CardData(2, _modifications : new Dictionary<CardModificationType, float>() { { CardModificationType.IncrementAttack, 0.5f } }) },
@@ -139,6 +141,8 @@ public class GlobalVars : MonoBehaviour
     public int numGamesToPlay = 1;
     [HideInInspector]
     public int currGamesToPlay;
+    [HideInInspector]
+    public int currentStalemateStreak = 0;
 
     void Awake()
     {
