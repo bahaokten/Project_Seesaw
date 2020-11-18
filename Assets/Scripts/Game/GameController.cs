@@ -405,7 +405,6 @@ public class GameController : MonoBehaviour
 
     public WinnerData StalemateStreakBreaker(WeaponController LWeapon, WeaponController RWeapon)
     {
-        GlobalVars.instance.currentStalemateStreak = 0;
         float LTotWeaponStats = playerControllerL.GetTotalWeaponStats();
         float RTotWeaponStats = playerControllerR.GetTotalWeaponStats();
         //The player with highest total stats win
@@ -487,6 +486,8 @@ public class GameController : MonoBehaviour
         float coins = CalculateCoins(winnerData.winnerAttDefDiff);
         if (winnerData.winner == Player.L)
         {
+            GlobalVars.instance.currentStalemateStreak = 0;
+
             playerControllerL.score++;
             playerControllerL.coins += coins;
             _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.L, coins, winnerData.weaponUsed[Player.L], winnerData.weaponUsed[Player.R]));
@@ -496,6 +497,8 @@ public class GameController : MonoBehaviour
             }
         } else if (winnerData.winner == Player.R)
         {
+            GlobalVars.instance.currentStalemateStreak = 0;
+
             playerControllerR.score++;
             playerControllerR.coins += coins;
             _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.R, coins, winnerData.weaponUsed[Player.L], winnerData.weaponUsed[Player.R]));
@@ -507,6 +510,7 @@ public class GameController : MonoBehaviour
         else
         {
             GlobalVars.instance.currentStalemateStreak++;
+
             _EventBus.Publish<PlayerWonRound>(new PlayerWonRound(Player.NaN, 0, 0, 0));
         }
         return Player.NaN;
