@@ -224,9 +224,9 @@ public class GameController : MonoBehaviour
 
     void _OnGameOver(GameOver e)
     {
-        GlobalVars.instance.currGamesToPlay--;
-        print(GlobalVars.instance.currGamesToPlay + " Games Left To Play");
-        if (GlobalVars.instance.currGamesToPlay > 0)
+        GlobalVars.GAMES_TO_PLAY--;
+        print(GlobalVars.GAMES_TO_PLAY + " Games Left To Play");
+        if (GlobalVars.GAMES_TO_PLAY > 0)
         {
             //Reload Game
             SceneManager.LoadScene("Game");

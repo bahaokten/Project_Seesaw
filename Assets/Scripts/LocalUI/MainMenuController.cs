@@ -7,6 +7,7 @@ using TMPro;
 public class MainMenuController : MonoBehaviour
 {
     public TMP_InputField scoreToWin;
+    public TMP_InputField gamesToPlay;
     
     public void ChangeLType(string t)
     {
@@ -21,6 +22,7 @@ public class MainMenuController : MonoBehaviour
     public void Start()
     {
         scoreToWin.text = GlobalVars.SCORE_TO_WIN.ToString();
+        gamesToPlay.text = GlobalVars.GAMES_TO_PLAY.ToString();
     }
 
 
@@ -83,10 +85,12 @@ public class MainMenuController : MonoBehaviour
 
     public void StartGame()
     {
-        GlobalVars.instance.currGamesToPlay = GlobalVars.instance.numGamesToPlay;
         int currScore = 0;
         int.TryParse(scoreToWin.text, out currScore);
+        int currGamesToPlay = 1;
+        int.TryParse(gamesToPlay.text, out currGamesToPlay);
         GlobalVars.SCORE_TO_WIN =  currScore;
+        GlobalVars.GAMES_TO_PLAY = currGamesToPlay;
         print(GlobalVars.SCORE_TO_WIN);
         SceneManager.LoadScene("Game");
     }

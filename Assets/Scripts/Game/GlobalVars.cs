@@ -95,6 +95,7 @@ public class GlobalVars : MonoBehaviour
 
     //CONSTANTS
     public static int SCORE_TO_WIN = 20;
+    public static int GAMES_TO_PLAY = 1;
 
     public static readonly int INITIAL_COINS = 5;
     public static readonly float WINNING_ROUND_BASE_COINS = 1;
@@ -137,10 +138,6 @@ public class GlobalVars : MonoBehaviour
     public bool animateAttack = true;
     public PlayerType LType;
     public PlayerType RType;
-    [Header("Internal Facing")]
-    public int numGamesToPlay = 1;
-    [HideInInspector]
-    public int currGamesToPlay;
     [HideInInspector]
     public int currentStalemateStreak = 0;
 
