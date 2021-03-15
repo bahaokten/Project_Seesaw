@@ -1,5 +1,5 @@
 # Project Seesaw
-Project SeeSaw aims to discover methodologies and patterns used in game balance practices.
+Project SeeSaw aims to discover methodologies and patterns used in game balance practices using data-driven machine learning and data analysis.
 
 I've created a modified version of Rock Paper Scissors called Super Rock Paper Scissors to conduct my research.
 
